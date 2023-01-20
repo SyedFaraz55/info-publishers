@@ -29,6 +29,7 @@ const AddDistributor = () => {
         "http://localhost:8000/api/admin/add-distributor",
         state
       );
+      console.log(result)
       if (result.data.ok) {
         setLoading(false);
         alert("Distributor Added");

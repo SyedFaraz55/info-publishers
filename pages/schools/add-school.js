@@ -56,11 +56,11 @@ const AddSchool = () => {
   };
   const handleSubmit = async () => {
     setLoading(true);
-    console.log({...state,classes:selectedClass})
+
     try {
       const result = await axios.post(
         "http://localhost:8000/api/admin/add-school",
-        state
+        {...state,classes:selectedClass}
       );
       if (result.data.ok) {
         setLoading(false);
@@ -92,13 +92,13 @@ const AddSchool = () => {
     <Box height={"100vh"}>
       <Header />
       <Layout>
-        <Box background={"#fff"} style={{ height: "100vh" }} p={4}>
+        <Box  style={{ height: "100vh" }} p={4}>
           <Text ml={10} fontSize={"2xl"}>
             Add School
           </Text>
           <Box ml={10} width={500} mt={4}>
             <form method="post">
-              <FormControl isRequired>
+              <FormControl >
                 <FormLabel>Distributor or Firm Name</FormLabel>
                 <Select
                   name="distId"

@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Flex, Link, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
@@ -14,6 +14,7 @@ import {
   TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
+import Router from "next/router";
 const School = () => {
   const [data, setData] = useState([]);
   const getSchool = async () => {
@@ -21,9 +22,8 @@ const School = () => {
     console.log(res.data.result);
     setData(res.data.result);
   };
-  
+
   const handleDelete = async (id) => {
-    
     const result = await axios.post(
       "http://localhost:8000/api/admin/delete-school",
       { id: id._id }
@@ -34,9 +34,7 @@ const School = () => {
     } else {
       new Error("Failed to delete");
     }
-  }
-
-
+  };
 
   useEffect(() => {
     getSchool();
@@ -49,7 +47,11 @@ const School = () => {
           <Flex alignItems={"center"} justifyContent={"space-between"} p={4}>
             <Text fontSize="2xl">Schools</Text>
 
-            <Button onClick={() => window.location.href = "/schools/add-school"} variant={"solid"} colorScheme="green">
+            <Button
+              onClick={() => (window.location.href = "/schools/add-school")}
+              variant={"solid"}
+              colorScheme="green"
+            >
               Create School
             </Button>
           </Flex>
@@ -70,15 +72,25 @@ const School = () => {
                   return (
                     <Tr background={"#fff"} key={item._id}>
                       <Td>{item.name}</Td>
-                      <Td>{item.pending ? <Badge colorScheme="red">Pending</Badge> : <Badge colorScheme={"green"}>Active</Badge>}</Td>
                       <Td>
-                        <Button variant={"link"} colorScheme="green">
-                          View
-                        </Button>
+                        {item.pending ? (
+                          <Badge colorScheme="red">Pending</Badge>
+                        ) : (
+                          <Badge colorScheme={"green"}>Active</Badge>
+                        )}
+                      </Td>
+                      <Td>
+                          <Button onClick={() => Router.push(`/schools/view?q=${item._id}`)} variant={"link"} colorScheme="green" >View</Button>
+
                       </Td>
                       <Td>
                         <Button
-                          onClick={() => handleDelete(item)}
+                          onClick={() => {
+                            const check = confirm("Are you sure ?");
+                            if (check) {
+                              handleDelete(item);
+                            }
+                          }}
                           variant={"link"}
                           colorScheme={"red"}
                         >

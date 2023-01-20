@@ -3,7 +3,7 @@ import Logo from "../public/images/info.png";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import {
   Alert,
   Box,
@@ -15,6 +15,7 @@ import {
   Button,
   Select,
 } from "@chakra-ui/react";
+import axiosInstance from "../Services/core";
 
 const App = () => {
   const [role, setRole] = useState();
@@ -59,6 +60,7 @@ const App = () => {
       if (result.data.ok) {
         router.push("/dashboard");
         localStorage.setItem("@login", JSON.stringify(result.data));
+        axiosInstance.defaults.headers.common['x-auth-token'] = result.data.token
       } else {
         setError(result.data);
       }
@@ -73,7 +75,8 @@ const App = () => {
           window.location.href = '/school-admin'
         } else if(result.data.user.role == 1) {
           localStorage.setItem("@login", JSON.stringify(result.data));
-          window.location.href = '/distributor-admin'
+          Router.push('/distributor-admin')
+          axiosInstance.defaults.headers.common['x-auth-token'] = result.data.token
         } else {
           alert("Something went wrong")
         }

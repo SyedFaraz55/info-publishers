@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Link,
   Spinner,
   Text,
 } from "@chakra-ui/react";
@@ -20,7 +21,7 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import Layout from "../../components/Layout";
@@ -171,9 +172,9 @@ const Subjects = () => {
                     <Tr background={"#fff"} key={item._id}>
                       <Td>{item.name}</Td>
                       <Td>
-                        <Button variant={"link"} colorScheme="green">
-                          View
-                        </Button>
+
+                          <Button onClick={() => Router.push(`/lessons?q=${item._id}`) } variant={"link"} colorScheme="green" >View</Button>
+
                       </Td>
                       <Td>
                         <Button

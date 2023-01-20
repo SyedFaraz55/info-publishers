@@ -1,8 +1,10 @@
 import { Badge, Box, Button, Flex, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Header from "../../../components/Header";
-import Layout from "../../../components/Layout";
+import Header from "../../components/Header";
+import Layout from "../../components/Layout";
+import { Document, Page } from "react-pdf";
+
 import {
   Table,
   Thead,
@@ -14,54 +16,52 @@ import {
   TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
-import axiosInstance from "../../../Services/core";
 import Router from "next/router";
 const School = () => {
   const [data, setData] = useState([]);
-  const [user, setUser] = useState({});
-  const getSchool = async () => {
-    const res = await axios.post(
-      "http://localhost:8000/api/admin/getSchoolsById",
-      { id: user.user?._id }
-    );
+  const [current, setCurrent] = useState({});
+  const getLessons = async () => {
+    const res = await axios.post("http://localhost:8000/api/admin/getLessonsById",{id:Router.query.q});
     console.log(res.data.result);
     setData(res.data.result);
   };
 
   const handleDelete = async (id) => {
-    const result = await axios.post(
-      "http://localhost:8000/api/admin/delete-school",
-      { id: id._id }
-    );
-    if (result.data.ok) {
-      alert("School Deleted");
-      getSchool();
-    } else {
-      new Error("Failed to delete");
-    }
+    alert("Deleted");
+    // const result = await axios.post(
+    //   "http://localhost:8000/api/admin/delete-school",
+    //   { id: id._id }
+    // );
+    // if (result.data.ok) {
+    //   alert("School Deleted");
+    //   getSchool();
+    // } else {
+    //   new Error("Failed to delete");
+    // }
   };
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("@login")));
+    getLessons();
   }, []);
-
-  useEffect(() => {
-    getSchool();
-  }, [user]);
   return (
     <Box>
       <Header />
       <Layout>
         <Box p={4}>
           <Flex alignItems={"center"} justifyContent={"space-between"} p={4}>
-            <Text fontSize="2xl">Distributor Schools</Text>
+            <Text fontSize="2xl">Lessons</Text>
 
             <Button
-              onClick={() => (window.location.href = "/schools/add-school")}
+              onClick={() => {
+                Router.push({
+                  pathname:"/lessons/add-lessons",
+                  query:Router.query
+                })
+              }}
               variant={"solid"}
               colorScheme="green"
             >
-              Create School
+              Create Lessons
             </Button>
           </Flex>
         </Box>
@@ -89,12 +89,25 @@ const School = () => {
                         )}
                       </Td>
                       <Td>
-                        
-                          <Button onClick={() => Router.push(`/schools/view?q=${item._id}`)} variant={"link"} colorScheme="green" >View</Button>
+                        <Button
+                          onClick={() => {
+                            window.location.href = item.link;
+                            setCurrent(item);
+                          }}
+                          variant={"link"}
+                          colorScheme="green"
+                        >
+                          Download
+                        </Button>
                       </Td>
                       <Td>
                         <Button
-                          onClick={() => handleDelete(item)}
+                          onClick={() => {
+                            const check = confirm("Are you sure ?");
+                            if (check) {
+                              handleDelete(item);
+                            }
+                          }}
                           variant={"link"}
                           colorScheme={"red"}
                         >
