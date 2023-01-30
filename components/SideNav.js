@@ -23,7 +23,7 @@ export default function SideNav() {
         <Image src={DashIcon} style={{ marginRight: 10 }} />
         <Link
           legacyBehavior
-          href={local?.user.role == 1 ? "/distributor-admin" : local?.user.role == 2 ?  "/school-admin" : "/dashboard"}
+          href={local?.user.role == 1 ? "/distributor-admin" : local?.user.role == 2 ? "/school-admin" : "/dashboard"}
         >
           <a>Dashboard</a>
         </Link>
@@ -54,69 +54,107 @@ export default function SideNav() {
         </>
       )}
 
-   {local?.user?.role == 2 ? null : <>
-    <Flex p={2} ml={4} alignItems={"center"}>
-        <Image src={Schools} style={{ marginRight: 10 }} />
-        <Link legacyBehavior href={local?.user?.role == 0 ? "/schools" : "/distributor-admin/schools"}>
-          <a>Schools</a>
-        </Link>
-      </Flex>
-      <Divider marginTop={3} />
-   </>}
+      {local?.user?.role == 2 ? null : <>
+        <Flex p={2} ml={4} alignItems={"center"}>
+          <Image src={Schools} style={{ marginRight: 10 }} />
+          <Link legacyBehavior href={local?.user?.role == 0 ? "/schools" : "/distributor-admin/schools"}>
+            <a>Schools</a>
+          </Link>
+        </Flex>
+        <Divider marginTop={3} />
+      </>}
 
       <Flex p={2} ml={4} alignItems={"center"}>
         <Image src={Students} style={{ marginRight: 10 }} />
-        {local?.user?.role == 1 || local?.user?.role == 0 ? (
-          <Link legacyBehavior href={"/gb?q=63c55ada1bb0c9133bc7701b"}>
+        {local?.user?.role == "1" || local?.user?.role == 0 ? (
+          <Link legacyBehavior href={"/gb?q=63cecffbec0dc8c65f98b6e4"}>
             <a>Global Students</a>
           </Link>
         ) : (
-          <Link legacyBehavior href={local?.user?.role == 2 ? '/schools/view?q=63c58665f3e16f23727492c4' : "/students"}>
+          <Link legacyBehavior href={local?.user?.role == 2 ? `/schools/view?q=${local?.user?._id}` : "/students"}>
             <a>Students</a>
           </Link>
         )}
       </Flex>
       <Divider marginTop={3} />
 
-      {local?.user?.role == 1|| local?.user?.role == 0 && (
-        <>
-          <Flex p={2} ml={4} alignItems={"center"}>
-            <Image src={Students} style={{ marginRight: 10 }} />
-            <Link legacyBehavior href={"/gb2?q=63c55aed1bb0c9133bc77022"}>
-              <a>E-Smart Students</a>
-            </Link>
-          </Flex>
-          <Divider marginTop={3} />
-        </>
-      )}
+
 
       <Flex p={2} ml={4} alignItems={"center"}>
-        <Image src={Online} style={{ marginRight: 10 }} />
-        <Link legacyBehavior href={"/teaching"}>
-          <a>Online Teaching</a>
+        <Image src={Students} style={{ marginRight: 10 }} />
+        <Link legacyBehavior href={"/gb2?q=63ced001ec0dc8c65f98b6e7"}>
+          <a>E-Smart Students</a>
         </Link>
       </Flex>
       <Divider marginTop={3} />
 
-     {local?.user?.role == 1 ? null : <>
-     
-      <Flex p={2} ml={4} alignItems={"center"}>
-        <Image src={Assessment} style={{ marginRight: 10 }} />
-        <Link legacyBehavior href={"/assessment"}>
-          <a>Assessment</a>
-        </Link>
-      </Flex>
-      <Divider marginTop={3} />
-     </>}
 
-   {local?.user?.role == 2 ? null : <>
-    <Flex p={2} ml={4} alignItems={"center"}>
-        <Image src={Notice} style={{ marginRight: 10 }} />
-        <Link legacyBehavior href={"/notices"}>
-          <a>Notices</a>
-        </Link>
-      </Flex>
-   </>}
+
+      {local?.user?.role == '1' ? null : <>
+
+        <Flex p={2} ml={4} alignItems={"center"}>
+          <Image src={Online} style={{ marginRight: 10 }} />
+          <Link legacyBehavior href={"/teaching"}>
+            <a>Online Teaching</a>
+          </Link>
+        </Flex>
+        <Divider marginTop={3} />
+      </>}
+
+
+      {local?.user?.role == '1' ? null : <>
+
+
+        <Flex p={2} ml={4} alignItems={"center"}>
+          <Image src={Online} style={{ marginRight: 10 }} />
+          <Link legacyBehavior href={"/animation"}>
+            <a>Animation Videos</a>
+          </Link>
+        </Flex>
+        <Divider marginTop={3} />
+      </>}
+
+      {local?.user?.role == 1 ? null : <>
+
+        <Flex p={2} ml={4} alignItems={"center"}>
+          <Image src={Assessment} style={{ marginRight: 10 }} />
+          <Link legacyBehavior href={"/assessment"}>
+            <a>Assessment</a>
+          </Link>
+        </Flex>
+        <Divider marginTop={3} />
+      </>}
+
+      {local?.user?.role == 1 ? null : <>
+
+        <Flex p={2} ml={4} alignItems={"center"}>
+          <Image src={Assessment} style={{ marginRight: 10 }} />
+          <Link legacyBehavior href={"/examination"}>
+            <a>Examination</a>
+          </Link>
+        </Flex>
+        <Divider marginTop={3} />
+      </>}
+
+      {local?.user?.role == '1' || local?.user?.role == '2' ? null : <>
+
+        <Flex p={2} ml={4} alignItems={"center"}>
+          <Image src={Assessment} style={{ marginRight: 10 }} />
+          <Link legacyBehavior href={"/year-plan"}>
+            <a>Year Plan</a>
+          </Link>
+        </Flex>
+        <Divider marginTop={3} />
+      </>}
+
+      {local?.user?.role == '2' || local?.user?.role == '1' ? null : <>
+        <Flex p={2} ml={4} alignItems={"center"}>
+          <Image src={Notice} style={{ marginRight: 10 }} />
+          <Link legacyBehavior href={"/notices"}>
+            <a>Notices</a>
+          </Link>
+        </Flex>
+      </>}
       <Divider marginTop={3} />
     </Box>
   );

@@ -5,7 +5,10 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Select,
   Spinner,
+  Tag,
+  TagLabel,
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -32,7 +35,7 @@ const Series = () => {
   const [toggle, setToggle] = useState(false);
   const getStudents = async () => {
     const result = await axios.get(
-      `http://localhost:8000/api/admin/get-student/${Router.query.q}`
+      `https://infopubsliher-backend.onrender.com/api/admin/get-student/${router.query.q}`
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -48,7 +51,7 @@ const Series = () => {
     }
     try {
       const result = await axios.post(
-        "http://localhost:8000/api/admin/add-series",
+        "https://infopubsliher-backend.onrender.com/api/admin/add-series",
         { name: series }
       );
       if (result.data.ok) {
@@ -71,12 +74,12 @@ const Series = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "http://localhost:8000/api/admin/delete-series",
+        "https://infopubsliher-backend.onrender.com/api/admin/delete-student",
         { id: item._id }
       );
       if (result.data.ok) {
         alert(result.data.message);
-        getSeries();
+        getStudents();
       } else {
         new Error("Failed to delete");
       }
@@ -85,6 +88,9 @@ const Series = () => {
   useEffect(() => {
     getStudents();
   }, []);
+  useEffect(() => {
+    getStudents();
+  }, [router]);
   return (
     <Box>
       <Header />
@@ -121,6 +127,26 @@ const Series = () => {
                       <Td>{item.email}</Td>
                       <Td>{item.mobile}</Td>
                       <Td>{item.dob}</Td>
+                      <Td>{item.active ? <Tag colorScheme={"green"}><TagLabel>Active</TagLabel></Tag> : <Tag colorScheme={"red"}><TagLabel>De-active</TagLabel></Tag>}</Td>
+                      <Td>
+                        <Select onChange={(e) => {
+                          const confirm = window.confirm("Are you sure ?");
+                          axios.post("https://infopubsliher-backend.onrender.com/api/admin/update-student", { id: item._id, status: e.target.value })
+                            .then(res => {
+                              if (res.data.ok) {
+                                alert(res.data.message);
+                                getStudents();
+                              } else {
+                                alert(res.data.message)
+                              }
+                            })
+                            .catch(err => alert(err.toString()))
+                        }}>
+                          <option value="">Select</option>
+                          <option value={true}>Active</option>
+                          <option value={false}>De-active</option>
+                        </Select>
+                      </Td>
                       {/* <Td>
                         <Button
                           onClick={() => {

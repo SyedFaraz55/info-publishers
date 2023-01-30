@@ -2,6 +2,7 @@ import {
   Box,
   Container,
   Flex,
+  Link,
   Stat,
   StatLabel,
   StatNumber,
@@ -19,19 +20,34 @@ import {
 import axios from "axios";
 const SchoolAdmin = () => {
   const [notices, setNotices] = useState({});
+  const [plan, setPlan] = useState();
+  const [stats, setStats] = useState()
   const getNotices = async () => {
-    const rs = await axios.post("http://localhost:8000/api/admin/get-notice", {
+    const rs = await axios.post("https://infopubsliher-backend.onrender.com/api/admin/get-notice", {
       role: local?.user.role,
     });
     setNotices(rs.data.data[0]);
   };
+  const getYearPlan = async () => {
+    const rs = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-year-plan");
+    setPlan(rs.data.data)
+  }
+  const getSchoolStats = async () => {
+    const result = await axios.get(`https://infopubsliher-backend.onrender.com/api/admin/get-school-stats/${local?.user?._id}`)
+    setStats(result.data)
+  }
   const [local, setLocal] = useState(null);
   useEffect(() => {
     setLocal(JSON.parse(localStorage?.getItem("@login")));
   }, []);
   useEffect(() => {
     getNotices();
+    getSchoolStats()
   }, [local]);
+
+  useEffect(() => {
+    getYearPlan();
+  }, [])
 
   return (
     <Box>
@@ -46,6 +62,16 @@ const SchoolAdmin = () => {
             </Alert>
           </Box>
         ) : null}
+
+        <Box p={5}>
+          {plan ? <Alert status='info'>
+            <AlertIcon />
+            <AlertTitle>{plan?.title}</AlertTitle>
+            <AlertDescription>
+              <Link href={plan?.link}>Download</Link>
+            </AlertDescription>
+          </Alert> : null}
+        </Box>
         <Flex p={6}>
 
           <Stat
@@ -56,9 +82,9 @@ const SchoolAdmin = () => {
               borderRadius: 6,
             }}
           >
-            <StatLabel>Global Students</StatLabel>
+            <StatLabel>Total Students</StatLabel>
             <StatNumber>
-              <Text fontSize={"2xl"}>10</Text>
+              <Text fontSize={"2xl"}>{stats?.students}</Text>
             </StatNumber>
           </Stat>
 
@@ -70,9 +96,22 @@ const SchoolAdmin = () => {
               borderRadius: 6,
             }}
           >
+            <StatLabel>Global Series</StatLabel>
+            <StatNumber>
+              <Text fontSize={"2xl"}>{stats?.global}</Text>
+            </StatNumber>
+          </Stat>
+          <Stat
+            style={{
+              background: "#fff",
+              padding: 10,
+              margin: 10,
+              borderRadius: 6,
+            }}
+          >
             <StatLabel>Smart Series</StatLabel>
             <StatNumber>
-              <Text fontSize={"2xl"}>20</Text>
+              <Text fontSize={"2xl"}>0</Text>
             </StatNumber>
           </Stat>
         </Flex>

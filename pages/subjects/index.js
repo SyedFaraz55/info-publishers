@@ -1,5 +1,9 @@
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Button,
   Flex,
   FormControl,
@@ -32,54 +36,23 @@ const Subjects = () => {
   const [data, setData] = useState([]);
   const router = useRouter();
   const handleSubject = async () => {
-    if (!data) {
-      const payload = {
-        id: router.query.q,
-        subjects: [{ name: subject }],
-      };
-      axios
-        .post("http://localhost:8000/api/admin/add-subject", payload)
-        .then((res) => {
-          if (res.data.ok) {
-            alert("Subject Added");
-            setToggle(false);
-            getSubjects();
-          } else {
-            alert("Failed to add Subject");
-          }
-        })
-        .catch((err) => alert(err.toString()));
-      return;
-    }
 
-    const dup = data;
-    dup?.subjects?.push({ name: subject });
-    setLoading(true);
-    if (!subject) {
-      alert("Please add Subject name");
-      setLoading(false);
-      setToggle(true);
-      return;
+    const payload = {
+      id: router.query.q,
+      subject: subject
     }
-    try {
-      const result = await axios.post(
-        "http://localhost:8000/api/admin/update-subject",
-        { id: router.query.q, data }
-      );
-      if (result.data.ok) {
-        setLoading(false);
-        setToggle(false);
-        alert("Subject Added");
-
-        getSubjects();
-      } else {
-        alert("Something went wrong");
-        setLoading(false);
-      }
-    } catch (err) {
-      alert(err.message);
-      setLoading(false);
-    }
+    axios
+      .post("https://infopubsliher-backend.onrender.com/api/admin/add-subject", payload)
+      .then((res) => {
+        if (res.data.ok) {
+          alert("Subject Added");
+          setToggle(false);
+          getSubjects();
+        } else {
+          alert("Failed to add Subject");
+        }
+      })
+      .catch((err) => alert(err.toString()))
   };
 
   const handleDelete = async (id) => {
@@ -93,7 +66,7 @@ const Subjects = () => {
         subjects: deleted,
       });
       const result = await axios.post(
-        "http://localhost:8000/api/admin/delete-subject",
+        "https://infopubsliher-backend.onrender.com/api/admin/delete-subject",
         { id: router.query.q, data: deleted }
       );
       if (result.data.ok) {
@@ -107,16 +80,20 @@ const Subjects = () => {
 
   const getSubjects = async () => {
     const result = await axios.post(
-      "http://localhost:8000/api/admin/get-subjects",
+      "https://infopubsliher-backend.onrender.com/api/admin/get-subjects",
       { id: router.query.q }
     );
-    console.log(result.data.result[0]);
-    setData(result.data.result[0]);
+    console.log(result.data.result, 'all');
+    setData(result.data.result);
   };
 
   useEffect(() => {
     getSubjects();
   }, []);
+
+  useEffect(() => {
+    getSubjects();
+  }, [router]);
   return (
     <Box>
       <Header />
@@ -156,7 +133,14 @@ const Subjects = () => {
               )}
             </FormControl>
           ) : null}
-
+          <Breadcrumb ml={5} spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
+            <BreadcrumbItem>
+              <BreadcrumbLink href='/series'>Series</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+          <BreadcrumbLink onClick={() => router.back()}> Classes</BreadcrumbLink>
+          </BreadcrumbItem>
+          </Breadcrumb>
           <TableContainer mt={5}>
             <Table variant="striped">
               <Thead>
@@ -167,13 +151,13 @@ const Subjects = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {data?.subjects?.map((item) => {
+                {data?.map((item) => {
                   return (
                     <Tr background={"#fff"} key={item._id}>
-                      <Td>{item.name}</Td>
+                      <Td>{item.subject}</Td>
                       <Td>
 
-                          <Button onClick={() => Router.push(`/lessons?q=${item._id}`) } variant={"link"} colorScheme="green" >View</Button>
+                        <Button onClick={() => Router.push(`/lessons?q=${item._id}`)} variant={"link"} colorScheme="green" >View</Button>
 
                       </Td>
                       <Td>

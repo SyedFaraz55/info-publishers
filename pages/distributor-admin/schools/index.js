@@ -1,6 +1,6 @@
-import { Badge, Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Flex, Select, Tag, TagLabel, Text } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Header from "../../../components/Header";
 import Layout from "../../../components/Layout";
 import {
@@ -21,8 +21,8 @@ const School = () => {
   const [user, setUser] = useState({});
   const getSchool = async () => {
     const res = await axios.post(
-      "http://localhost:8000/api/admin/getSchoolsById",
-      { id: user.user?._id }
+      "https://infopubsliher-backend.onrender.com/api/admin/getSchoolsById",
+      { id: user?.user?._id }
     );
     console.log(res.data.result);
     setData(res.data.result);
@@ -30,7 +30,7 @@ const School = () => {
 
   const handleDelete = async (id) => {
     const result = await axios.post(
-      "http://localhost:8000/api/admin/delete-school",
+      "https://infopubsliher-backend.onrender.com/api/admin/delete-school",
       { id: id._id }
     );
     if (result.data.ok) {
@@ -48,6 +48,9 @@ const School = () => {
   useEffect(() => {
     getSchool();
   }, [user]);
+  useLayoutEffect(()=> {
+    getSchool();
+  },[])
   return (
     <Box>
       <Header />
@@ -81,13 +84,26 @@ const School = () => {
                   return (
                     <Tr background={"#fff"} key={item._id}>
                       <Td>{item.name}</Td>
+                      <Td>{item.active ? <Tag colorScheme={"green"}><TagLabel>Active</TagLabel></Tag> : <Tag colorScheme={"red"}><TagLabel>De-active</TagLabel></Tag>}</Td>
                       <Td>
-                        {item.pending ? (
-                          <Badge colorScheme="red">Pending</Badge>
-                        ) : (
-                          <Badge colorScheme={"green"}>Active</Badge>
-                        )}
-                      </Td>
+                        <Select onChange={(e) => {
+                          const confirm = window.confirm("Are you sure ?");
+                          axios.post("https://infopubsliher-backend.onrender.com/api/admin/update-school", { id: item._id, status: e.target.value })
+                            .then(res => {
+                              if (res.data.ok) {
+                                alert(res.data.message);
+                                getSchool();
+                              } else {
+                                alert(res.data.message)
+                              }
+                            })
+                            .catch(err => alert(err.toString()))
+                        }}>
+                          <option value="">Select</option>
+                          <option value={true}>Active</option>
+                          <option value={false}>De-active</option>
+                        </Select>
+                      </Td> 
                       <Td>
                         
                           <Button onClick={() => Router.push(`/schools/view?q=${item._id}`)} variant={"link"} colorScheme="green" >View</Button>

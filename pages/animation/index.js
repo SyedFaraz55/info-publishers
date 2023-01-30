@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import "../../node_modules/video-react/dist/video-react.css"; // import css
 
-import { Player,ControlBar ,BigPlayButton} from 'video-react';
+import { Player, ControlBar, BigPlayButton } from 'video-react';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
@@ -27,45 +27,45 @@ import {
   TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import CustomModal from "../../components/Modal";
 const Teaching = () => {
   const [data, setData] = useState([]);
+  const [local,setLocal] = useState()
   const router = useRouter()
   const [series, setSeries] = useState("");
   const [loading, setLoading] = useState(false);
   const [toggle, setToggle] = useState(false);
-  const {isOpen,onOpen,onClose} = useDisclosure()
-  const [current,setCurrent] = useState({});
-  const [local,setLocal] = useState();
-  const getAssessment = async () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [current, setCurrent] = useState({})
+  const getAnimation = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com/api/admin/get-assessment"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-animation"
     );
     console.log(result.data.data);
     setData(result.data.data);
   };
 
 
-
   const handleDelete = async (item) => {
+
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/delete-assessment",
+        "https://infopubsliher-backend.onrender.com/api/admin/delete-animation",
         { id: item._id }
       );
       if (result.data.ok) {
         alert(result.data.message);
-        getAssessment();
+        getAnimation()
       } else {
         new Error("Failed to delete");
       }
     }
   };
   useEffect(() => {
-   getAssessment();
-   setLocal(JSON.parse(localStorage.getItem("@login")))
+    getAnimation();
+    setLocal(JSON.parse(localStorage.getItem("@login")));
   }, []);
   return (
     <Box>
@@ -73,21 +73,22 @@ const Teaching = () => {
       <Layout>
         <Box p={4}>
           <Flex alignItems={"center"} justifyContent={"space-between"} p={4}>
-            <Text fontSize="2xl">Assessment</Text>
+            <Text fontSize="2xl">Animation</Text>
 
-           {local?.user?.role == '2' ? null :  <Button
-              onClick={() => {
-                router.push("/assessment/create")
-              }}
-              variant={"solid"}
-              colorScheme="green"
-            >
-              Create
-            </Button>}
+            {local?.user?.role == '0' ? 
+           <Button
+           onClick={() => {
+             router.push("/animation/create")
+           }}
+           variant={"solid"}
+           colorScheme="green"
+         >
+           Create
+         </Button> 
+            :null}
           </Flex>
         </Box>
         <Box p={4}>
-
           <TableContainer>
             <Table variant="striped">
               <Thead>
@@ -103,10 +104,8 @@ const Teaching = () => {
                       <Td>
                         <Button
                           onClick={() => {
-                            Router.push({
-                              pathname:"/assessment/view",
-                              query:`q=${item._id}`
-                            })
+                            setCurrent(item);
+                            onOpen()
                           }}
                           variant={"link"}
                           colorScheme={"green"}
@@ -114,7 +113,9 @@ const Teaching = () => {
                           View
                         </Button>
                       </Td>
-                     {local?.user?.role == '2' ? null :  <Td>
+                    {local?.user?.role == '0' ? 
+                    
+                   <Td>
                         <Button
                           onClick={() => handleDelete(item)}
                           variant={"link"}
@@ -122,7 +123,8 @@ const Teaching = () => {
                         >
                           Delete
                         </Button>
-                      </Td>}
+                      </Td>
+                  :null} 
                     </Tr>
                   );
                 })}
@@ -130,11 +132,11 @@ const Teaching = () => {
             </Table>
           </TableContainer>
           <CustomModal size={"xl"} isOpen={isOpen} onClose={onClose}>
-            <Box style={{width:"100%",height:"auto"}}>
+            <Box style={{ width: "100%", height: "auto" }}>
               <Player
-              fluid
-              autoPlay
-              preload="auto"
+                fluid
+                autoPlay
+                preload="auto"
               >
                 <source src={"https://www.youtube.com/watch?v=A2ezicN5tqw&list=RDMMGcMd_DHkxY0&index=10"} />
                 <ControlBar autoHide={false} />

@@ -21,12 +21,12 @@ const AddSchool = () => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
-    date:"",
     subs: []
   })
   const [state, setState] = useState({
     name: "",
     link: "",
+    date: ""
   });
   const [rows, setRows] = useState([]);
 
@@ -64,16 +64,8 @@ const AddSchool = () => {
   };
   const handleSubmit = async () => {
     setLoading(true);
-    console.log({...form,subs:rows});
-
-    if(form.name == '') {
-      alert("Lesson Name is required");
-      setLoading(false);
-      return
-    }
 
 
-    const formData = new FormData();
     // formData.append("file", state.link);
 
     // const r = await axios.post(
@@ -98,13 +90,13 @@ const AddSchool = () => {
 
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/add-lessons",
-        { ...form,subs:rows, id: Router.query.q }
+        "https://infopubsliher-backend.onrender.com/api/admin/add-animation",
+        { ...state, id: Router.query.q }
       );
       if (result.data.ok) {
         setLoading(false);
-        alert("Lesson Added");
-        window.location.href = "/subjects";
+        alert("Animation Added");
+        Router.push("/teaching")
       } else {
         new Error("Failed to add lessons");
         setLoading(false);
@@ -125,91 +117,34 @@ const AddSchool = () => {
       <Layout>
         <Box style={{ height: "100vh" }} p={4}>
           <Text ml={10} fontSize={"2xl"}>
-            Add Lessons
+            Add Animation
           </Text>
           <Box ml={10} width={500} mt={4}>
             <form method="post">
               <FormControl mt={4} isRequired>
-                <FormLabel>Lesson Name</FormLabel>
+                <FormLabel>Animation Name</FormLabel>
                 <Input
                   background={"#fff"}
                   name="name"
                   placeholder="Name"
-                  onChange={e => setForm(prevState => ({ ...prevState, name: e.target.value }))}
+                  onChange={e => setState(prevState => ({ ...prevState, name: e.target.value }))}
                 />
               </FormControl>
 
-              {/* <FormControl mt={4} isRequired>
-                <FormLabel>Upload file</FormLabel>
+
+              <FormControl mt={4} isRequired>
+                <FormLabel>Link</FormLabel>
                 <Input
                   background={"#fff"}
-                  name="file"
-                  placeholder="File"
-                  type={"file"}
-                  accept="application/pdf"
-                  onChange={handleChange}
+                  name="link"
+                  placeholder="Link"
+                  onChange={e => setState(prevState => ({ ...prevState, link: e.target.value }))}
                 />
-              </FormControl> */}
+              </FormControl>
 
-              <Divider mt={5} />
 
-              <Box>
 
-                <FormControl mt={4} isRequired>
-                  <FormLabel>Name</FormLabel>
-                  <Input
-                    background={"#fff"}
-                    value={state?.name}
-                    name="partname"
-                    placeholder="Part Name"
-                    onChange={e => setState(prevState => ({ ...prevState, name: e.target.value }))}
-                  />
-                </FormControl>
 
-                <FormControl mt={4} isRequired>
-                  <FormLabel>Link</FormLabel>
-                  <Input
-                    background={"#fff"}
-                    value={state.link}
-                    name="link"
-                    placeholder="Link"
-                    onChange={e => setState(prevState => ({ ...prevState, link: e.target.value }))}
-                  />
-                </FormControl>
-
-                <FormControl mt={4}>
-                  <FormLabel>Select Date</FormLabel>
-                  <Input
-                    background={"#fff"}
-                    value={form.date}
-                    name="date"
-                    placeholder="date"
-                    type={"date"}
-                    onChange={e => setForm(prevState => ({...prevState,date:e.target.value}))}
-                  />
-                </FormControl>
-                <Button mt={5} variant="outline" colorScheme={"green"} onClick={() => {
-                  if(state.link == '') {
-                    alert("link is required");
-                    return
-                  }
-                  setRows(prevState => ([...prevState, state]))
-                  setState({name:"",link:""})
-                }}>Add</Button>
-                <Box mt={4}>
-                  {
-                    rows?.length > 0 ? rows?.map(item => {
-                      return <Flex justifyContent="space-between" alignItems="center" mt={2} border={"1px"} borderRadius={4} bg="#fff" borderColor={"gray.300"} p={3}>
-                      <Text>  {item.name}</Text>
-                      <Button colorScheme={"red"} variant={"link"} onClick={() => {
-                        const r = rows.filter(ix => ix.name != item.name);
-                        setRows(r)
-                      }} >Delete</Button>
-                      </Flex>
-                    }) : null
-                  }
-                </Box>
-              </Box>
               {loading ? (
                 <Spinner />
               ) : (
@@ -219,7 +154,7 @@ const AddSchool = () => {
                   variant={"solid"}
                   colorScheme="green"
                 >
-                  Add Lesson
+                  Add
                 </Button>
               )}
             </form>

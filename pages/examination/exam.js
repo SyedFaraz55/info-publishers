@@ -26,7 +26,7 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-const Notices = () => {
+const Assessment = () => {
   const [data, setData] = useState([]);
   const router = useRouter();
   const [state, setState] = useState({ title: "", role: "", message: "" });
@@ -99,44 +99,35 @@ const Notices = () => {
       <Layout>
         <Box p={4}>
           <Flex alignItems={"center"} justifyContent={"space-between"} p={4}>
-            <Text fontSize="2xl">Notices</Text>
+            <Text fontSize="2xl">Assessment</Text>
 
             <Button
               onClick={() => setToggle(!toggle)}
               variant={"solid"}
               colorScheme="green"
             >
-              Create Notice
+              Create Assessment
             </Button>
           </Flex>
         </Box>
         <Box p={4}>
           {toggle ? (
             <Box style={{ width: 600 }}>
-              <FormControl mb={4} isRequired>
-                <FormLabel>Notice To</FormLabel>
-                <Select onChange={handleChange} name="role" background={"#fff"}>
-                  <option value={"0"}>All</option>
-                  <option value={"1"}>Distributors</option>
-                  <option value={"2"}>School</option>
-                  <option>Students</option>
-                </Select>
-              </FormControl>
               <FormControl isRequired>
-                <FormLabel>Title</FormLabel>
+                <FormLabel>Assessment Name</FormLabel>
                 <Input
                   background={"#fff"}
-                  placeholder="Title"
+                  placeholder="Assessment Name"
                   onChange={handleChange}
-                  name="title"
+                  name="name"
                 />
               </FormControl>
               <FormControl mt={5} isRequired>
-                <FormLabel>Message</FormLabel>
-                <Textarea
+                <FormLabel>Marks</FormLabel>
+                <Input
                   background={"#fff"}
-                  placeholder="message"
-                  name="message"
+                  placeholder="Marks"
+                  name="marks"
                   onChange={handleChange}
                 />
               </FormControl>
@@ -154,45 +145,10 @@ const Notices = () => {
               )}
             </Box>
           ) : null}
-          <TableContainer mt={5}>
-            <Table variant="striped">
-              <Thead>
-                <Tr>
-                  <Th>Title</Th>
-                  <Th>Message</Th>
-                  <Th>Notice To</Th>
-                  <Th>Action</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data?.map((item) => {
-                  return (
-                    <Tr key={item._id} style={{ background: "#fff" }}>
-                      <Td>{item.title}</Td>
-                      <Td>{item.message}</Td>
-                      <Td>
-                        {item.role == "1" ? "Distributors" : null}
-                        {item.role == "2" ? "School" : null}
-                      </Td>
-                      <Td>
-                        <Button
-                          onClick={() => handleDelete(item)}
-                          variant={"link"}
-                          colorScheme={"red"}
-                        >
-                          Delete
-                        </Button>
-                      </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </TableContainer>
         </Box>
       </Layout>
     </Box>
   );
 };
 
-export default Notices;
+export default Assessment;

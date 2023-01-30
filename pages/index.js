@@ -38,25 +38,27 @@ const App = () => {
   };
   useEffect(() => {
     if (role == 0) {
-      setURL("http://localhost:8000/api/admin/login");
+      setURL("https://infopubsliher-backend.onrender.com/api/admin/login");
     }
 
     if (role == 1) {
-      setURL("http://localhost:8000/api/admin/dist-login");
+      setURL("https://infopubsliher-backend.onrender.com/api/admin/dist-login");
     }
     if (role == 2) {
-      setURL("http://localhost:8000/api/admin/school-login");
+      setURL("https://infopubsliher-backend.onrender.com/api/admin/school-login");
+    }
+
+    if (role == 3) {
+      setURL('https://infopubsliher-backend.onrender.com/api/admin/student-login')
     }
   }, [role]);
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(role);
     if (role == 0) {
       const result = await axios.post(url, {
         password: user.password,
         user: user.mobile,
       });
-      console.log(result);
       if (result.data.ok) {
         router.push("/dashboard");
         localStorage.setItem("@login", JSON.stringify(result.data));
@@ -68,15 +70,38 @@ const App = () => {
       const result = await axios.post(url, {
         ...user,
       });
-      console.log(result);
+
       if (result.data.ok) {
-        if(result.data.user.role == 2) {
+        if (result.data.user.role == 2) {
           localStorage.setItem("@login", JSON.stringify(result.data));
-          window.location.href = '/school-admin'
-        } else if(result.data.user.role == 1) {
-          localStorage.setItem("@login", JSON.stringify(result.data));
-          Router.push('/distributor-admin')
+          if (result.data.user.active) {
+
+            localStorage.setItem("@login", JSON.stringify(result.data));
+            router.push("/school-admin")
+          } else {
+            alert("User is de-active. Please contact administrator");
+            return
+          }
+        } else if (result.data.user.role == 1) {
+          if (result.data.user.active) {
+
+            localStorage.setItem("@login", JSON.stringify(result.data));
+            router.push("/distributor-admin")
+          } else {
+            alert("User is de-active. Please contact administrator");
+            return
+          }
           axiosInstance.defaults.headers.common['x-auth-token'] = result.data.token
+        } else if (result.data.user.role == 3) {
+          if (result.data.user.active) {
+
+            localStorage.setItem("@login", JSON.stringify(result.data));
+            router.push("/student-login")
+          } else {
+            alert("User is de-active. Please contact administrator");
+            return
+          }
+
         } else {
           alert("Something went wrong")
         }
@@ -85,6 +110,25 @@ const App = () => {
       }
     }
   };
+
+  const getLocalStorage = () => {
+    const local = JSON.parse(localStorage.getItem("@login"));
+    console.log(local);
+    axiosInstance.defaults.headers.common['x-auth-token'] = local?.token;
+    if (local?.user.role == "0") {
+      router.push("/dashboard");
+    } else if (local?.user.role == '1') {
+      router.push('/distributor-admin')
+    } else if (local?.user.role == '2') {
+
+      router.push('/school-admin')
+    } else {
+      router.push("/")
+    }
+  }
+  useEffect(() => {
+    getLocalStorage();
+  }, [])
   return (
     <Box mt={150}>
       <Container>
@@ -106,6 +150,7 @@ const App = () => {
                   { label: "Admin", value: 0 },
                   { label: "School", value: 2 },
                   { label: "Distributor", value: 1 },
+                  { label: "Student", value: 3 },
                 ].map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}

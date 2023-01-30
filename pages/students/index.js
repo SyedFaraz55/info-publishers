@@ -28,13 +28,13 @@ const AddSchool = () => {
   const [data, setData] = useState([]);
   const [school, setSchool] = useState("");
   const getSchool = async () => {
-    const res = await axios.get("http://localhost:8000/api/admin/get-schools");
+    const res = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-schools");
     console.log(res.data.result);
     setData(res.data.result);
   };
   const getSeries = async () => {
     const result = await axios.get(
-      "http://localhost:8000/api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
     );
     console.log(result.data.series);
     setSeries(result.data.series);
@@ -52,13 +52,19 @@ const AddSchool = () => {
 
     try {
       const result = await axios.post(
-        "http://localhost:8000/api/admin/add-student",
-        { ...state, standard: seriesVal, school }
+        "https://infopubsliher-backend.onrender.com/api/admin/add-student",
+        { ...state, standard: seriesVal, school,id:local?.user?._id }
       );
       if (result.data.ok) {
         setLoading(false);
         alert("Student Added");
-        window.location.href = "/schools";
+        if (local?.user?.role == '1') {
+          window.location.href = "distributor-admin/schools";
+        } else if(local?.user?.role == '2') {
+          window.location.href = `/schools/view?q=${local?.user?._id}`;
+        }else {
+          window.location.href = "/schools";
+        }
       } else {
         new Error("Failed to add Student");
         setLoading(false);
@@ -84,7 +90,7 @@ const AddSchool = () => {
     <Box height={"100vh"}>
       <Header />
       <Layout>
-        <Box style={{ height: "100vh" }} p={4}>
+        <Box p={4}>
           <Text ml={10} fontSize={"2xl"}>
             Add Student
           </Text>
@@ -179,8 +185,9 @@ const AddSchool = () => {
                 </Select>
               </FormControl>
               <FormControl mt={4} isRequired>
-                <FormLabel>Select Series</FormLabel>
+                <FormLabel>Select Standard</FormLabel>
                 <Select
+                  bg={"#fff"}
                   name="series"
                   onChange={(e) => setSelectedSeries(e.target.value)}
                 >

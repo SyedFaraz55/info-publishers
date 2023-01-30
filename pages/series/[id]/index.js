@@ -1,5 +1,8 @@
 import {
   Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Button,
   Flex,
   FormControl,
@@ -10,8 +13,8 @@ import {
   useAnimationState,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import Router, { useRouter } from "next/router";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Header from "../../../components/Header";
 import Layout from "../../../components/Layout";
 import {
@@ -26,6 +29,7 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 const Classes = () => {
   const [data, setData] = useState([1]);
   const router = useRouter();
@@ -36,7 +40,7 @@ const Classes = () => {
 
   const getClasses = async () => {
     const { data } = await axios.post(
-      "http://localhost:8000/api/admin/getClassById",
+      "https://infopubsliher-backend.onrender.com/api/admin/getClassById",
       { id: router.query.id }
     );
     console.log(data.result[0]);
@@ -50,7 +54,7 @@ const Classes = () => {
         classes: [{ name: classname }],
       };
       axios
-        .post("http://localhost:8000/api/admin/add-class", payload)
+        .post("https://infopubsliher-backend.onrender.com/api/admin/add-class", payload)
         .then((res) => {
           if (res.data.ok) {
             alert("Class Added");
@@ -74,7 +78,7 @@ const Classes = () => {
     }
     try {
       const result = await axios.post(
-        "http://localhost:8000/api/admin/update-class",
+        "https://infopubsliher-backend.onrender.com/api/admin/update-class",
         { id: router.query.id, data }
       );
       if (result.data.ok) {
@@ -104,7 +108,7 @@ const Classes = () => {
         classes: deleted,
       });
       const result = await axios.post(
-        "http://localhost:8000/api/admin/delete-class",
+        "https://infopubsliher-backend.onrender.com/api/admin/delete-class",
         { id: router.query.id, data: deleted }
       );
       if (result.data.ok) {
@@ -118,11 +122,17 @@ const Classes = () => {
   useEffect(() => {
     getClasses();
   }, []);
+
+  useEffect(() => {
+
+    getClasses();
+  }, [router]);
   return (
     <Box>
       <Header />
       <Layout>
         <Box p={4}>
+         
           <Flex alignItems={"center"} justifyContent={"space-between"} p={4}>
             <Text fontSize="2xl">Classes</Text>
 
@@ -134,6 +144,14 @@ const Classes = () => {
               Create Class
             </Button>
           </Flex>
+          <Breadcrumb ml={5} spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
+          <BreadcrumbItem>
+          <BreadcrumbLink href='/series'>Series</BreadcrumbLink>
+          </BreadcrumbItem>
+          {/* <BreadcrumbItem>
+          <BreadcrumbLink href={`/series/${router.query.id}`}> Classes</BreadcrumbLink>
+          </BreadcrumbItem> */}
+          </Breadcrumb>
           {toggle ? (
             <Box p={4}>
               <FormControl isRequired>

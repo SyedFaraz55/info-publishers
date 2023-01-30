@@ -1,9 +1,12 @@
-import { Badge, Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Badge, Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Layout from "../../components/Layout";
-import { Document, Page } from "react-pdf";
+import "../../node_modules/video-react/dist/video-react.css"; // import css
+import VideoImageThumbnail from 'react-video-thumbnail-image'; // use npm published version
+
+import { Player,ControlBar ,BigPlayButton} from 'video-react';
 
 import {
   Table,
@@ -16,20 +19,25 @@ import {
   TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
+import CustomModal from "../../components/Modal";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 const School = () => {
   const [data, setData] = useState([]);
   const [current, setCurrent] = useState({});
+  const [player, setVideoPlayer] = useState(false)
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
   const getLessons = async () => {
-    const res = await axios.post("http://localhost:8000/api/admin/getLessonsById",{id:Router.query.q});
+    const res = await axios.post("https://infopubsliher-backend.onrender.com/api/admin/getLessonsById", { id: Router.query.q });
     console.log(res.data.result);
     setData(res.data.result);
   };
-
+  const  router = useRouter();
   const handleDelete = async (id) => {
     alert("Deleted");
     // const result = await axios.post(
-    //   "http://localhost:8000/api/admin/delete-school",
+    //   "https://infopubsliher-backend.onrender.com/api/admin/delete-school",
     //   { id: id._id }
     // );
     // if (result.data.ok) {
@@ -43,6 +51,14 @@ const School = () => {
   useEffect(() => {
     getLessons();
   }, []);
+
+  useEffect(() => {
+    getLessons();
+  }, [router]);
+
+ 
+
+
   return (
     <Box>
       <Header />
@@ -54,8 +70,8 @@ const School = () => {
             <Button
               onClick={() => {
                 Router.push({
-                  pathname:"/lessons/add-lessons",
-                  query:Router.query
+                  pathname: "/lessons/add-lessons",
+                  query: Router.query
                 })
               }}
               variant={"solid"}
@@ -63,9 +79,22 @@ const School = () => {
             >
               Create Lessons
             </Button>
+            
           </Flex>
         </Box>
+      
         <Box p={4}>
+        <Breadcrumb ml={5} spacing="8px" separator={<ChevronRightIcon color="gray.500" />}>
+           <BreadcrumbItem>
+              <BreadcrumbLink href='/series'>Series</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+          <BreadcrumbLink onClick={() => router.back()}> Classes</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
+          <BreadcrumbLink onClick={() => router.back()}> Subjects</BreadcrumbLink>
+          </BreadcrumbItem>
+          </Breadcrumb>
           <TableContainer mt={5}>
             <Table variant="striped">
               <Thead>
@@ -91,13 +120,21 @@ const School = () => {
                       <Td>
                         <Button
                           onClick={() => {
-                            window.location.href = item.link;
-                            setCurrent(item);
+                            const valid = new Date(item.date).getDate() == new Date().getDate();
+                            if(valid) {
+                              onOpen()
+                              setCurrent(item);
+                              return
+                            }else {
+                              alert(`The Content will be available from ${new Date(item?.date)} `)
+                            }
+                            
+                            console.log(item)
                           }}
                           variant={"link"}
                           colorScheme="green"
                         >
-                          Download
+                          View
                         </Button>
                       </Td>
                       <Td>
@@ -120,6 +157,36 @@ const School = () => {
               </Tbody>
             </Table>
           </TableContainer>
+          <CustomModal isOpen={isOpen} onClose={onClose} onClick={onOpen}>
+            <Box>
+              <Text fontSize={"2xl"}>{current?.name}</Text>
+            </Box>
+            <Box mt={4}>
+              {
+                current?.subs?.map(item => {
+                  return <Box onClick={() => {
+                    onOpen2();
+                  }} mt={2} p={2} border="1px" borderColor={"gray.300"} borderRadius={4} >
+                    <Text>{item?.name}</Text>
+                  </Box>
+                })
+              }
+            </Box>
+          </CustomModal>
+
+          <CustomModal size={"xl"} isOpen={isOpen2} onClose={onClose2}>
+            <Box style={{width:"100%",height:"auto"}}>
+              <Player
+              fluid
+              autoPlay
+              >
+                <source src={current?.link} />
+                <ControlBar autoHide={false} />
+                <BigPlayButton position="center" />
+
+              </Player>
+            </Box>
+          </CustomModal>
         </Box>
       </Layout>
     </Box>

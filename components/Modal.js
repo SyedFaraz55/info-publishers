@@ -9,9 +9,9 @@ import {
   ModalCloseButton,
   Button,
 } from "@chakra-ui/react";
-const CustomModal = ({ isOpen, onClose, title, children, onClick }) => {
+const CustomModal = ({ isOpen, onClose, title, children, onClick ,size}) => {
   return (
-    <Modal size={"full"} isOpen={isOpen} onClose={onClose}>
+    <Modal  size={size || "full"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>

@@ -9,6 +9,9 @@ import {
   Input,
   Select,
   Spinner,
+  Tag,
+  TagCloseButton,
+  TagLabel,
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -20,13 +23,13 @@ const AddSchool = () => {
   const [dist, setDist] = useState([]);
   const [series, setSeries] = useState([]);
   const [classes, setClasses] = useState([]);
-  const [local,setLocal] = useState(null)
+  const [local, setLocal] = useState(null)
   const [seriesVal, setSelectedSeries] = useState("");
-  const [noClasses,setNoClasses]= useState()
+  const [noClasses, setNoClasses] = useState()
   const [loading, setLoading] = useState(false);
   const [selectedClass, setSelectedClasses] = useState([]);
   const getDist = async () => {
-    const res = await axios.get("http://localhost:8000/api/admin/get-dist");
+    const res = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-dist");
     console.log(res.data.result);
     setDist(res.data.result);
   };
@@ -35,14 +38,14 @@ const AddSchool = () => {
   }, [selectedClass]);
   const getSeries = async () => {
     const result = await axios.get(
-      "http://localhost:8000/api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
     );
     console.log(result.data.series);
     setSeries(result.data.series);
   };
   const getClasses = async () => {
     const { data } = await axios.post(
-      "http://localhost:8000/api/admin/getClassById",
+      "https://infopubsliher-backend.onrender.com/api/admin/getClassById",
       { id: seriesVal }
     );
     console.log(data.result[0]);
@@ -54,18 +57,35 @@ const AddSchool = () => {
       [e.target.name]: e.target.value,
     }));
   };
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+
+    if(dist == ''){
+      alert("Please select distributors");
+      setLoading(false);
+      return
+    }
+
+    if(seriesVal == '') {
+      alert("Please select series");
+      setLoading(false)
+      return
+    }
 
     try {
       const result = await axios.post(
-        "http://localhost:8000/api/admin/add-school",
-        {...state,classes:selectedClass}
+        "https://infopubsliher-backend.onrender.com/api/admin/add-school",
+        { ...state, classes: selectedClass }
       );
       if (result.data.ok) {
         setLoading(false);
         alert("School Added");
-        window.location.href = "/schools";
+      if(local?.user?.role == '1') {
+ window.location.href = "/distributor-admin/schools";
+      } else {
+ window.location.href = "/schools";
+      }
       } else {
         new Error("Failed to add school");
         setLoading(false);
@@ -85,14 +105,14 @@ const AddSchool = () => {
     getClasses();
   }, [seriesVal]);
 
-  useEffect(()=> {
+  useEffect(() => {
     setLocal(JSON.parse(localStorage.getItem("@login")))
-  },[])
+  }, [])
   return (
     <Box height={"100vh"}>
       <Header />
       <Layout>
-        <Box  style={{ height: "100vh" }} p={4}>
+        <Box p={4}>
           <Text ml={10} fontSize={"2xl"}>
             Add School
           </Text>
@@ -186,8 +206,8 @@ const AddSchool = () => {
 
               <FormControl mt={4} isRequired>
                 <FormLabel>No of Classes</FormLabel>
-                <Select name="noClasses" onChange={(handleChange)}>
-                <option>Select</option>
+                <Select bg={"#fff"} name="noClasses" onChange={(handleChange)}>
+                  <option>Select</option>
                   <option value={1}>1</option>
                   <option value={2}>2</option>
                   <option value={3}>3</option>
@@ -204,16 +224,24 @@ const AddSchool = () => {
               </FormControl>
               <Box mt={2} mb={2}>
                 {selectedClass.map((item) => (
-                  <Badge ml={2}>{item.name}</Badge>
+                  <Tag size={"md"} colorScheme="green" variant={"solid"} ml={2}>
+                    <TagLabel>{item.name}</TagLabel>
+                    <TagCloseButton onClick={() => {
+                      const cs = selectedClass.filter(i => i.name !== item.name);
+                      setSelectedClasses(cs)
+                    }} />
+                  </Tag>
                 ))}
               </Box>
               <FormControl mt={4} isRequired>
                 <FormLabel>Select Series</FormLabel>
                 <Select
+                  isRequired
+                  bg="#fff"
                   name="series"
                   onChange={(e) => setSelectedSeries(e.target.value)}
                 >
-                     <option>Select</option>
+                  <option>Select</option>
                   {series?.map((item) => {
                     return <option value={item._id}>{item.name}</option>;
                   })}
@@ -225,8 +253,14 @@ const AddSchool = () => {
                   {classes?.classes?.map((item) => {
                     return (
                       <Button
+                        mt={2}
+                        bg={"#fff"}
                         onClick={() => {
-                          console.log(selectedClass.indexOf(item));
+
+                          if (selectedClass.length >= state['noClasses']) {
+                            alert(`No of Classes selected max (${state['noClasses']})`);
+                            return
+                          }
                           if (selectedClass.indexOf(item) <= 0) {
                             setSelectedClasses((prevState) => [
                               ...prevState,
@@ -290,6 +324,7 @@ const AddSchool = () => {
                 <Spinner />
               ) : (
                 <Button
+                type="submit"
                   onClick={handleSubmit}
                   mt={4}
                   variant={"solid"}
