@@ -6,7 +6,7 @@ import Layout from "../../components/Layout";
 import "../../node_modules/video-react/dist/video-react.css"; // import css
 import VideoImageThumbnail from 'react-video-thumbnail-image'; // use npm published version
 
-import { Player,ControlBar ,BigPlayButton} from 'video-react';
+import { Player, ControlBar, BigPlayButton } from 'video-react';
 
 import {
   Table,
@@ -25,6 +25,7 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 const School = () => {
   const [data, setData] = useState([]);
   const [current, setCurrent] = useState({});
+  const [video, setVideo] = useState()
   const [player, setVideoPlayer] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
@@ -33,19 +34,19 @@ const School = () => {
     console.log(res.data.result);
     setData(res.data.result);
   };
-  const  router = useRouter();
+  const router = useRouter();
   const handleDelete = async (id) => {
-    alert("Deleted");
-    // const result = await axios.post(
-    //   "https://infopubsliher-backend.onrender.com/api/admin/delete-school",
-    //   { id: id._id }
-    // );
-    // if (result.data.ok) {
-    //   alert("School Deleted");
-    //   getSchool();
-    // } else {
-    //   new Error("Failed to delete");
-    // }
+    const result = await axios.post(
+      "https://infopubsliher-backend.onrender.com/api/admin/delete-lesson",
+      { id: id._id }
+    );
+    if (result.data.ok) {
+      alert("Lesson Deleted");
+      getLessons()
+    } else {
+      new Error("Failed to delete");
+      alert("Something went wrong")
+    }
   };
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const School = () => {
     getLessons();
   }, [router]);
 
- 
+
 
 
   return (
@@ -79,21 +80,21 @@ const School = () => {
             >
               Create Lessons
             </Button>
-            
+
           </Flex>
         </Box>
-      
+
         <Box p={4}>
-        <Breadcrumb ml={5} spacing="8px" separator={<ChevronRightIcon color="gray.500" />}>
-           <BreadcrumbItem>
+          <Breadcrumb ml={5} spacing="8px" separator={<ChevronRightIcon color="gray.500" />}>
+            <BreadcrumbItem>
               <BreadcrumbLink href='/series'>Series</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
-          <BreadcrumbLink onClick={() => router.back()}> Classes</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-          <BreadcrumbLink onClick={() => router.back()}> Subjects</BreadcrumbLink>
-          </BreadcrumbItem>
+              <BreadcrumbLink onClick={() => router.back()}> Classes</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink onClick={() => router.back()}> Subjects</BreadcrumbLink>
+            </BreadcrumbItem>
           </Breadcrumb>
           <TableContainer mt={5}>
             <Table variant="striped">
@@ -121,14 +122,14 @@ const School = () => {
                         <Button
                           onClick={() => {
                             const valid = new Date(item.date).getDate() == new Date().getDate();
-                            if(valid) {
+                            if (valid) {
                               onOpen()
                               setCurrent(item);
                               return
-                            }else {
+                            } else {
                               alert(`The Content will be available from ${new Date(item?.date)} `)
                             }
-                            
+
                             console.log(item)
                           }}
                           variant={"link"}
@@ -166,8 +167,16 @@ const School = () => {
                 current?.subs?.map(item => {
                   return <Box onClick={() => {
                     onOpen2();
+                    setVideo(item)
                   }} mt={2} p={2} border="1px" borderColor={"gray.300"} borderRadius={4} >
                     <Text>{item?.name}</Text>
+                    <VideoImageThumbnail
+                      videoUrl={item?.link}
+                      thumbnailHandler={(thumbnail) => console.log(thumbnail)}
+                      width={30}
+                      height={30}
+                      alt="my test video"
+                    />
                   </Box>
                 })
               }
@@ -175,12 +184,12 @@ const School = () => {
           </CustomModal>
 
           <CustomModal size={"xl"} isOpen={isOpen2} onClose={onClose2}>
-            <Box style={{width:"100%",height:"auto"}}>
+            <Box style={{ width: "100%", height: "auto" }}>
               <Player
-              fluid
-              autoPlay
+                fluid
+                autoPlay
               >
-                <source src={current?.link} />
+                <source src={video?.link} />
                 <ControlBar autoHide={false} />
                 <BigPlayButton position="center" />
 

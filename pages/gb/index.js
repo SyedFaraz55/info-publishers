@@ -38,6 +38,21 @@ import {
       console.log(result.data.data);
       setData(result.data.data);
     };
+    const handleDelete = async (item) => {
+      const ret = confirm("Are you sure?");
+      if (ret) {
+        const result = await axios.post(
+          "https://infopubsliher-backend.onrender.com/api/admin/delete-student",
+          { id: item._id }
+        );
+        if (result.data.ok) {
+          alert("Record Deleted");
+          getStudents();
+        } else {
+          new Error("Failed to delete");
+        }
+      }
+    };
 
     useEffect(() => {
       getStudents();
@@ -45,7 +60,7 @@ import {
 
     useEffect(() => {
         getStudents();
-      }, [Router]);
+      }, [router.query.q]);
 
     return (
       <Box>

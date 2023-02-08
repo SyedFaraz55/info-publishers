@@ -60,18 +60,16 @@ const Subjects = () => {
 
     const ret = confirm("Are you sure?");
     if (ret) {
-      const deleted = dup?.subjects?.filter((td) => td._id != id._id);
-      setData({
-        ...dup,
-        subjects: deleted,
-      });
+      const deleted = dup?.filter((td) => td._id != id._id);
+      setData(deleted)
+
       const result = await axios.post(
         "https://infopubsliher-backend.onrender.com/api/admin/delete-subject",
         { id: router.query.q, data: deleted }
       );
       if (result.data.ok) {
         alert(result.data.message);
-        getClasses();
+        window.location.reload()
       } else {
         new Error("Failed to delete");
       }

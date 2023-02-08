@@ -35,7 +35,7 @@ const Teaching = () => {
 
     useEffect(() => {
         getTeachingData();
-    }, [local, router])
+    }, [local])
     return <>
         <Header />
         <Box p={5}>

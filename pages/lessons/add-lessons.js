@@ -104,7 +104,7 @@ const AddSchool = () => {
       if (result.data.ok) {
         setLoading(false);
         alert("Lesson Added");
-        window.location.href = "/subjects";
+        Router.back()
       } else {
         new Error("Failed to add lessons");
         setLoading(false);

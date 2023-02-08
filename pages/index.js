@@ -22,6 +22,7 @@ const App = () => {
   const [url, setURL] = useState();
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
+  const [loading,setLoading] = useState(false)
   const {
     isOpen: isVisible,
     onClose,
@@ -53,6 +54,7 @@ const App = () => {
     }
   }, [role]);
   const handleLogin = async (e) => {
+    setLoading(true)
     e.preventDefault();
     if (role == 0) {
       const result = await axios.post(url, {
@@ -63,8 +65,11 @@ const App = () => {
         router.push("/dashboard");
         localStorage.setItem("@login", JSON.stringify(result.data));
         axiosInstance.defaults.headers.common['x-auth-token'] = result.data.token
+
+    setLoading(false)
       } else {
         setError(result.data);
+    setLoading(false)
       }
     } else {
       const result = await axios.post(url, {
@@ -76,19 +81,23 @@ const App = () => {
           localStorage.setItem("@login", JSON.stringify(result.data));
           if (result.data.user.active) {
 
+    setLoading(false)
             localStorage.setItem("@login", JSON.stringify(result.data));
             router.push("/school-admin")
           } else {
             alert("User is de-active. Please contact administrator");
+    setLoading(false)
             return
           }
         } else if (result.data.user.role == 1) {
           if (result.data.user.active) {
 
             localStorage.setItem("@login", JSON.stringify(result.data));
+    setLoading(false)
             router.push("/distributor-admin")
           } else {
             alert("User is de-active. Please contact administrator");
+    setLoading(false)
             return
           }
           axiosInstance.defaults.headers.common['x-auth-token'] = result.data.token
@@ -96,17 +105,22 @@ const App = () => {
           if (result.data.user.active) {
 
             localStorage.setItem("@login", JSON.stringify(result.data));
+    setLoading(false)
             router.push("/student-login")
           } else {
             alert("User is de-active. Please contact administrator");
+    setLoading(false)
+
             return
           }
 
         } else {
           alert("Something went wrong")
+    setLoading(false)
         }
       } else {
         setError(result.data);
+    setLoading(false)
       }
     }
   };
@@ -189,6 +203,7 @@ const App = () => {
               style={{ marginTop: 10, marginLeft: 220 }}
               variant="solid"
               colorScheme={"green"}
+              isLoading={loading}
             >
               Submit
             </Button>

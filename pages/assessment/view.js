@@ -1,8 +1,7 @@
 import Router, { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../Services/core";
-import Quiz from 'react-quiz-component';
-import { Box } from "@chakra-ui/react";
+import { Alert, AlertTitle, Box } from "@chakra-ui/react";
 
 
 
@@ -26,11 +25,15 @@ const View = () => {
 
 
     return <Box>
-        {data ? <Quiz quiz={{
+        {/* {data ? <Quiz quiz={{
             quizTitle: data && data?.name,
             nrOfQuestions: "4",
             questions: data && data?.questions
-        }} /> : null}
+        }} /> : null} */}
+        <Alert>
+            <AlertTitle>Page is under construction.</AlertTitle>
+        </Alert>
+
     </Box>
 
 }

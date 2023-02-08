@@ -127,7 +127,7 @@ Please login to continue <Link style={{marginLeft:10}} href={"/"} >Click here</L
                         <Td>{item.mobile}</Td>
                         <Td>{item.state}</Td>
                         <Td>{item.school}</Td>
-                        <Td>
+                        {/* <Td>
                           <Button
                             onClick={() => {
                               onOpen();
@@ -138,7 +138,7 @@ Please login to continue <Link style={{marginLeft:10}} href={"/"} >Click here</L
                           >
                             View
                           </Button>
-                        </Td>
+                        </Td> */}
                         {/* <Td>
                           <Button variant={"link"} colorScheme={"red"}>
                             Delete

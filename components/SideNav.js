@@ -10,12 +10,23 @@ import Assessment from "../public/images/disable/assessments_disable.svg";
 import Notice from "../public/images/disable/notice_disable.svg";
 
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function SideNav() {
+  const [data, setData] = useState([])
   const [local, setLocal] = useState();
-
+  const getSeries = async () => {
+    const result = await axios.get(
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
+    );
+    console.log(result.data.series, 'series');
+    setData(result.data.series);
+  };
   useEffect(() => {
     setLocal(JSON.parse(localStorage.getItem("@login")));
+  }, []);
+  useEffect(() => {
+    getSeries();
   }, []);
   return (
     <Box p={0}>
@@ -64,27 +75,38 @@ export default function SideNav() {
         <Divider marginTop={3} />
       </>}
 
+
+
+      {data?.map((item, index) => {
+        return <>
+          {local?.user?.role == '2' ? null : <>
+
+            <Flex p={2} ml={4} alignItems={"center"}>
+
+        <Image src={Students} style={{ marginRight: 10 }} />
+              {local?.user?.role == "1" || local?.user?.role == 0 ? (
+                <Link legacyBehavior href={`/gb?q=${item._id}`}>
+                  <a>{item?.name}</a>
+                </Link>
+              ) : (
+                null
+              )}
+
+            </Flex>
+            <Divider marginTop={3} />
+          </>}
+        </>
+      })}
+
+
+
+
       <Flex p={2} ml={4} alignItems={"center"}>
         <Image src={Students} style={{ marginRight: 10 }} />
-        {local?.user?.role == "1" || local?.user?.role == 0 ? (
-          <Link legacyBehavior href={"/gb?q=63cecffbec0dc8c65f98b6e4"}>
-            <a>Global Students</a>
-          </Link>
-        ) : (
-          <Link legacyBehavior href={local?.user?.role == 2 ? `/schools/view?q=${local?.user?._id}` : "/students"}>
-            <a>Students</a>
-          </Link>
-        )}
-      </Flex>
-      <Divider marginTop={3} />
-
-
-
-      <Flex p={2} ml={4} alignItems={"center"}>
-        <Image src={Students} style={{ marginRight: 10 }} />
-        <Link legacyBehavior href={"/gb2?q=63ced001ec0dc8c65f98b6e7"}>
-          <a>E-Smart Students</a>
+        <Link legacyBehavior href={local?.user?.role == 2 ? `/schools/view?q=${local?.user?._id}` : "/students"}>
+          <a>Studensts</a>
         </Link>
+
       </Flex>
       <Divider marginTop={3} />
 
