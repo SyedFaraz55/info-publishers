@@ -40,7 +40,7 @@ const Teaching = () => {
   const [local,setLocal] = useState()
   const getTeaching = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com/api/admin/get-teaching"
+      "http://localhost:8000/api/admin/get-teaching"
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -56,7 +56,7 @@ const Teaching = () => {
     }
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/add-series",
+        "http://localhost:8000/api/admin/add-series",
         { name: series }
       );
       if (result.data.ok) {
@@ -79,7 +79,7 @@ const Teaching = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/delete-teaching",
+        "http://localhost:8000/api/admin/delete-teaching",
         { id: item._id }
       );
       if (result.data.ok) {

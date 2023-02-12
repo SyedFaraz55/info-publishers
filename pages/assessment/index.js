@@ -40,7 +40,7 @@ const Teaching = () => {
   const [local,setLocal] = useState();
   const getAssessment = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com/api/admin/get-assessment"
+      "http://localhost:8000/api/admin/get-assessment"
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -52,7 +52,7 @@ const Teaching = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/delete-assessment",
+        "http://localhost:8000/api/admin/delete-assessment",
         { id: item._id }
       );
       if (result.data.ok) {

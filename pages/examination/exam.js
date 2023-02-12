@@ -34,7 +34,7 @@ const Assessment = () => {
   const [toggle, setToggle] = useState(false);
   const getSeries = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com/api/admin/get-notices"
+      "http://localhost:8000/api/admin/get-notices"
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -50,7 +50,7 @@ const Assessment = () => {
     }
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/notice",
+        "http://localhost:8000/api/admin/notice",
         state
       );
       if (result.data.ok) {
@@ -72,7 +72,7 @@ const Assessment = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/delete-notices",
+        "http://localhost:8000/api/admin/delete-notices",
         { id: item._id }
       );
       if (result.data.ok) {

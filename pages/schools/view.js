@@ -35,7 +35,7 @@ const Series = () => {
   const [toggle, setToggle] = useState(false);
   const getStudents = async () => {
     const result = await axios.get(
-      `https://infopubsliher-backend.onrender.com/api/admin/get-student/${router.query.q}`
+      `http://localhost:8000/api/admin/get-student/${router.query.q}`
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -51,7 +51,7 @@ const Series = () => {
     }
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/add-series",
+        "http://localhost:8000/api/admin/add-series",
         { name: series }
       );
       if (result.data.ok) {
@@ -74,7 +74,7 @@ const Series = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/delete-student",
+        "http://localhost:8000/api/admin/delete-student",
         { id: item._id }
       );
       if (result.data.ok) {
@@ -131,7 +131,7 @@ const Series = () => {
                       <Td>
                         <Select onChange={(e) => {
                           const confirm = window.confirm("Are you sure ?");
-                          axios.post("https://infopubsliher-backend.onrender.com/api/admin/update-student", { id: item._id, status: e.target.value })
+                          axios.post("http://localhost:8000/api/admin/update-student", { id: item._id, status: e.target.value })
                             .then(res => {
                               if (res.data.ok) {
                                 alert(res.data.message);

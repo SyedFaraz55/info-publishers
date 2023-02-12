@@ -23,17 +23,17 @@ const SchoolAdmin = () => {
   const [plan, setPlan] = useState();
   const [stats, setStats] = useState()
   const getNotices = async () => {
-    const rs = await axios.post("https://infopubsliher-backend.onrender.com/api/admin/get-notice", {
+    const rs = await axios.post("http://localhost:8000/api/admin/get-notice", {
       role: local?.user.role,
     });
     setNotices(rs.data.data[0]);
   };
   const getYearPlan = async () => {
-    const rs = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-year-plan");
+    const rs = await axios.get("http://localhost:8000/api/admin/get-year-plan");
     setPlan(rs.data.data)
   }
   const getSchoolStats = async () => {
-    const result = await axios.get(`https://infopubsliher-backend.onrender.com/api/admin/get-school-stats/${local?.user?._id}`)
+    const result = await axios.get(`http://localhost:8000/api/admin/get-school-stats/${local?.user?._id}`)
     setStats(result.data)
   }
   const [local, setLocal] = useState(null);

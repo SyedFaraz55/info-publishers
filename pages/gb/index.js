@@ -33,7 +33,7 @@ import {
     const getStudents = async () => {
         console.log(Router.query.q)
       const result = await axios.get(
-        `https://infopubsliher-backend.onrender.com/api/admin/get-studentByClass/${Router.query.q}`
+        `http://localhost:8000/api/admin/get-studentByClass/${Router.query.q}`
       );
       console.log(result.data.data);
       setData(result.data.data);
@@ -42,7 +42,7 @@ import {
       const ret = confirm("Are you sure?");
       if (ret) {
         const result = await axios.post(
-          "https://infopubsliher-backend.onrender.com/api/admin/delete-student",
+          "http://localhost:8000/api/admin/delete-student",
           { id: item._id }
         );
         if (result.data.ok) {
