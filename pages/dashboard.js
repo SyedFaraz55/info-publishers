@@ -126,7 +126,7 @@ Please login to continue <Link style={{marginLeft:10}} href={"/"} >Click here</L
                         <Td>{item.name}</Td>
                         <Td>{item.mobile}</Td>
                         <Td>{item.state}</Td>
-                        <Td>{item.school}</Td>
+                        <Td>{item.school || 0}</Td>
                         {/* <Td>
                           <Button
                             onClick={() => {

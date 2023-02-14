@@ -88,9 +88,7 @@ const Series = () => {
   useEffect(() => {
     getStudents();
   }, []);
-  useEffect(() => {
-    getStudents();
-  }, [router]);
+
   return (
     <Box>
       <Header />

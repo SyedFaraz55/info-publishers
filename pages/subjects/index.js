@@ -56,16 +56,16 @@ const Subjects = () => {
   };
 
   const handleDelete = async (id) => {
-    const dup = data;
+
 
     const ret = confirm("Are you sure?");
     if (ret) {
-      const deleted = dup?.filter((td) => td._id != id._id);
-      setData(deleted)
+
+      console.log(id);
 
       const result = await axios.post(
         "http://localhost:8000/api/admin/delete-subject",
-        { id: router.query.q, data: deleted }
+        { id: id._id }
       );
       if (result.data.ok) {
         alert(result.data.message);

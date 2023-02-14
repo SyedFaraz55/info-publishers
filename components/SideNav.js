@@ -29,7 +29,7 @@ export default function SideNav() {
     getSeries();
   }, []);
   return (
-    <Box p={0}>
+    <Box p={0} width={200}>
       <Flex p={2} ml={4} alignItems={"center"}>
         <Image src={DashIcon} style={{ marginRight: 10 }} />
         <Link

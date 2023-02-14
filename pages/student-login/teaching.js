@@ -1,6 +1,6 @@
 import { Box, Button, Container, Flex, Stat, StatLabel, StatNumber, Text, useDisclosure } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Header from "../../components/Header";
 import axiosInstance from "../../Services/core";
 import {
@@ -31,10 +31,13 @@ const Teaching = () => {
     const getTeachingData = async () => {
         const rs = await axiosInstance.get(`/admin/get-teaching/${local?.user?.standard}`);
         setData(rs.data.data)
+        console.log(rs.data.data)
     }
 
-    useEffect(() => {
-        getTeachingData();
+    useLayoutEffect(() => {
+        if (local) {
+            getTeachingData();
+        }
     }, [local])
     return <>
         <Header />

@@ -186,3 +186,13 @@ body {
     display: flex;
     justify-content: space-between;
 }
+
+.quiz-selected {
+    background-color: green;
+    color: #fff;
+}
+
+.quiz-selected {
+    background-color:#f6f6f6;
+    color: #000;
+}

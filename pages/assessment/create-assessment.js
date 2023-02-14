@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    Divider,
     Flex,
     FormControl,
     FormLabel,
@@ -62,8 +63,16 @@ const Create = () => {
                 alert(err.message);
                 setLoading(false);
             }
+
+
         }
 
+
+
+    }
+
+    const handleEditChange = item => {
+        console.log(item)
     }
     return (
         <Box>
@@ -78,24 +87,16 @@ const Create = () => {
                             </FormControl>
                             <FormControl mt={2} isRequired>
                                 <FormLabel>Points</FormLabel>
-                                <Input value={form.point} bg={"#fff"} placeholder="Name" name="Name" onChange={e => setForm(prevState => ({ ...prevState, point: e.target.value }))} />
+                                <Input value={form.point} bg={"#fff"} placeholder="Point" required type={"number"} name="point" onChange={e => setForm(prevState => ({ ...prevState, point: e.target.value }))} />
                             </FormControl>
                             <FormControl mt={2} isRequired>
                                 <FormLabel>Question</FormLabel>
                                 <Textarea value={form.question} bg={"#fff"} placeholder="Name" name="Name" onChange={e => setForm(prevState => ({ ...prevState, question: e.target.value }))} />
                             </FormControl>
-                            <FormControl mt={2} isRequired>
-                                <FormLabel>Answer Selection Type</FormLabel>
-                                <Select bg="#fff" onChange={(e) => setForm(prevState => ({ ...prevState, answerSelectionType: e.target.value }))}>
-                                    <option value={""}>Select</option>
-                                    <option value={"single"}>Single</option>
-                                    <option value={"multiple"}>Multiple</option>
-                                </Select>
-                            </FormControl>
                             <Box>
                                 {form.answers?.map(item => {
                                     return <Tag m={2} colorScheme="green">
-                                        <TagLabel>{item}</TagLabel>
+                                        <TagLabel>{item?.name}</TagLabel>
                                         <TagCloseButton onClick={() => {
                                             const dp = form.answers;
                                             const r = dp.filter(itx => itx != item);
@@ -105,24 +106,51 @@ const Create = () => {
                                 })}
                             </Box>
                             <FormControl mt={2} isRequired>
-                                <FormLabel>Answer</FormLabel>
-                                <Textarea bg={"#fff"} value={answer} placeholder="Enter Answer" name="Name" onChange={e => setAnswer(e.target.value)} />
+                                <FormLabel>Options</FormLabel>
+                                <Textarea onKeyDown={e => {
+                                    if (e.keyCode == 13) {
+                                        setForm(prevState => ({ ...prevState, answers: [...prevState.answers, answer] }))
+                                        setAnswer({id:"",name:""})
+                                    }
+                                }} bg={"#fff"} value={answer?.name} placeholder="Enter Answer" name="Name" onChange={e => setAnswer({
+                                    id:Math.floor(Math.random()*999),
+                                    name:e.target.value
+                                })} />
                                 <Button mt={2} colorScheme="green" variant={"outline"} onClick={() => {
                                     setForm(prevState => ({ ...prevState, answers: [...prevState.answers, answer] }))
-                                    setAnswer('')
-                                }} >Add Answers</Button>
+                                    setAnswer({id:"",name:""})
+                                }} >Add Options</Button>
                             </FormControl>
                             <FormControl mt={2} isRequired>
                                 <FormLabel>Correct Answer</FormLabel>
-                                <Input value={form.correctAnswer} bg={"#fff"} placeholder="Single - 1, Multiple - 1,2,3" name="Name" onChange={e => {
-                                    if (form.answerSelectionType == 'single') {
+                                <Input value={form.correctAnswer} bg={"#fff"} placeholder="ABC" name="Name" onChange={e => {
+
                                         setForm(prevState => ({ ...prevState, correctAnswer: e.target.value }))
-                                    } else {
-                                        setForm(prevState => ({ ...prevState, correctAnswer: e.target.value?.split(",") }))
-                                    }
+
                                 }} />
                                 <Flex mt={3} alignItems={"center"}>
                                     <Button colorScheme={"green"} variant={"solid"} onClick={() => {
+                                        if(!form.point) {
+                                            alert("Enter points for this question");
+                                            return
+                                        }
+
+                                        if(!form.question) {
+                                            alert("Enter Question")
+                                            return
+                                        }
+
+                                        if(!form.correctAnswer) {
+                                            alert("Enter Correct Answer")
+                                            return
+                                        }
+
+                                        if(!form.answers?.length > 2) {
+                                            alert("Add atleast 2 options for this question")
+                                            return
+                                        }
+
+                                        
                                         setForm(prevState => ({ ...prevState, answers: [...prevState.answers, answer] }))
                                         setQuestions(prevState => ([...prevState, form]))
                                         setForm({
@@ -156,13 +184,30 @@ const Create = () => {
                         <Text fontSize={"2xl"}>All Questions</Text>
                         <Box mt={2} ml={2}>
                             {questions?.map(item => {
-                                return <Flex justifyContent={"space-between"} alignItems="center" bg="#fff" p={4} mt={3} borderWidth={1} borderColor="gray.300" borderRadius={5}>
-                                    <Text>{item?.question}</Text>
-                                    <Button variant={"link"} onClick={() => {
+                                return <Box bg="#fff" p={4} mt={3} borderWidth={1} borderColor="gray.300" borderRadius={5}>
+                                    <Text fontSize={"xl"}>Q: {item?.question}</Text>
+                                    {item.edit ? <Box>
+
+                                        {item?.answers?.map(item => {
+                                            return <Input mt={2} placeholder={item.name} onChange={handleEditChange} />
+                                        })}
+                                    </Box> : <Box>
+                                        <Divider />
+                                        {item?.answers?.map((item, index) => {
+                                            return <Text mt={2}>{index + 1} : {item?.name}</Text>
+                                        })}</Box>}
+                                    <Button variant={"solid"} mt={5} onClick={() => {
+                                        const dup = [...questions];
+                                        const idx = dup.indexOf(item);
+                                        dup[idx].edit = dup[idx].edit ? false : true;
+                                        setQuestions(dup)
+                                    }} colorScheme="blue" >Edit</Button>
+                                    <Button variant={"solid"} mt={5} onClick={() => {
                                         const r = questions.filter(i => i.question != item.question);
                                         setQuestions(r)
-                                    }} colorScheme="red">Delete</Button>
-                                </Flex>
+                                    }} colorScheme="red" ml={2}>Delete</Button>
+
+                                </Box>
                             })}
                         </Box>
                     </CustomModal>

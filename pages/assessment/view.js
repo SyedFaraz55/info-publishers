@@ -1,14 +1,21 @@
 import Router, { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../Services/core";
-import { Alert, AlertTitle, Box } from "@chakra-ui/react";
+import { Alert, AlertTitle, Box, Button, Container, Heading, Text } from "@chakra-ui/react";
+import Quiz from "../../components/Quiz";
+
+
 
 
 
 const View = () => {
-    const [data, setData] = useState();
+const [data,setData] = useState([])  
     const router = useRouter()
     const getAssessment = async () => {
+        if (!router.query.q) {
+            router.back()
+
+        }
         const result = await axiosInstance.get(
             `/admin/get-assessment/${router.query.q}`
         );
@@ -16,25 +23,33 @@ const View = () => {
         console.log(result.data.data)
     };
     useEffect(() => {
-        getAssessment();
+        if (!router.query.q) {
+            router.push("/assessment")
+            return
+        } else {
+
+            getAssessment();
+        }
     }, [])
 
     useEffect(() => {
-        getAssessment();
-    }, [router.query])
+        if (!router.query.q) {
+            router.push("/assessment")
+            return
+        } else {
 
+            getAssessment();
+        }
 
-    return <Box>
-        {/* {data ? <Quiz quiz={{
-            quizTitle: data && data?.name,
-            nrOfQuestions: "4",
-            questions: data && data?.questions
-        }} /> : null} */}
-        <Alert>
-            <AlertTitle>Page is under construction.</AlertTitle>
-        </Alert>
+    }, [router])
 
-    </Box>
+   
+   
+console.log(data)
+    return <Container maxW={"container.lg"} mt={10} >
+       
+        <Quiz quiz={data} setData={setData}  />
+    </Container>
 
 }
 
