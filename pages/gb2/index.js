@@ -33,7 +33,7 @@ import {
     const getStudents = async () => {
         console.log(Router.query.q)
       const result = await axios.get(
-        `http://localhost:8000/api/admin/get-studentByClass/${Router.query.q}`
+        `https://infopubsliher-backend.onrender.com/api/admin/get-studentByClass/${Router.query.q}`
       );
       console.log(result.data.data);
       setData(result.data.data);

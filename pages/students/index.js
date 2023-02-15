@@ -28,13 +28,13 @@ const AddSchool = () => {
   const [data, setData] = useState([]);
   const [school, setSchool] = useState("");
   const getSchool = async () => {
-    const res = await axios.get("http://localhost:8000/api/admin/get-schools");
+    const res = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-schools");
     console.log(res.data.result);
     setData(res.data.result);
   };
   const getSeries = async () => {
     const result = await axios.get(
-      "http://localhost:8000/api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
     );
     console.log(result.data.series);
     setSeries(result.data.series);
@@ -52,7 +52,7 @@ const AddSchool = () => {
 
     try {
       const result = await axios.post(
-        "http://localhost:8000/api/admin/add-student",
+        "https://infopubsliher-backend.onrender.com/api/admin/add-student",
         { ...state, standard: seriesVal, school,id:local?.user?._id }
       );
       if (result.data.ok) {

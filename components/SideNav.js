@@ -17,7 +17,7 @@ export default function SideNav() {
   const [local, setLocal] = useState();
   const getSeries = async () => {
     const result = await axios.get(
-      "http://localhost:8000/api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
     );
     console.log(result.data.series, 'series');
     setData(result.data.series);

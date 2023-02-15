@@ -30,19 +30,19 @@ const AddSchool = () => {
   const [rows, setRows] = useState([]);
 
   const getDist = async () => {
-    const res = await axios.get("http://localhost:8000/api/admin/get-dist");
+    const res = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-dist");
     console.log(res.data.result);
   };
 
   const getSeries = async () => {
     const result = await axios.get(
-      "http://localhost:8000/api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
     );
     console.log(result.data.series);
   };
   const getClasses = async () => {
     const { data } = await axios.post(
-      "http://localhost:8000/api/admin/getClassById",
+      "https://infopubsliher-backend.onrender.com/api/admin/getClassById",
       { id: seriesVal }
     );
     console.log(data.result[0]);
@@ -68,7 +68,7 @@ const AddSchool = () => {
     // formData.append("file", state.link);
 
     // const r = await axios.post(
-    //   "http://localhost:8000/api/admin/s3url",
+    //   "https://infopubsliher-backend.onrender.com/api/admin/s3url",
     //   formData,
     //   {
     //     headers: {
@@ -89,7 +89,7 @@ const AddSchool = () => {
 
     try {
       const result = await axios.post(
-        "http://localhost:8000/api/admin/add-animation",
+        "https://infopubsliher-backend.onrender.com/api/admin/add-animation",
         { ...state, id: Router.query.q }
       );
       if (result.data.ok) {

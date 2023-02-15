@@ -58,15 +58,9 @@ const Animation = () => {
                                             <Button
                                                 onClick={() => {
 
-                                                    const valid = new Date(item.date).getDate() == new Date().getDate();
-                                                    if (valid) {
-
-                                                        setCurrent(item);
+                                                                                  setCurrent(item);
                                                         onOpen()
-                                                    } else {
-
-                                                        alert(`The Content will be available from ${new Date(item?.date)} `)
-                                                    }
+                                                  
                                                 }}
                                                 variant={"link"}
                                                 colorScheme={"green"}

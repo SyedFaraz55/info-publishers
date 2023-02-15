@@ -30,14 +30,14 @@ const School = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
   const getLessons = async () => {
-    const res = await axios.post("http://localhost:8000/api/admin/getLessonsById", { id: Router.query.q });
+    const res = await axios.post("https://infopubsliher-backend.onrender.com/api/admin/getLessonsById", { id: Router.query.q });
     console.log(res.data.result);
     setData(res.data.result);
   };
   const router = useRouter();
   const handleDelete = async (id) => {
     const result = await axios.post(
-      "http://localhost:8000/api/admin/delete-lesson",
+      "https://infopubsliher-backend.onrender.com/api/admin/delete-lesson",
       { id: id._id }
     );
     if (result.data.ok) {
@@ -121,14 +121,9 @@ const School = () => {
                       <Td>
                         <Button
                           onClick={() => {
-                            const valid = new Date(item.date).getDate() == new Date().getDate();
-                            if (valid) {
-                              onOpen()
-                              setCurrent(item);
-                              return
-                            } else {
-                              alert(`The Content will be available from ${new Date(item?.date)} `)
-                            }
+                            onOpen()
+                            setCurrent(item);
+
 
                             console.log(item)
                           }}
