@@ -36,12 +36,12 @@ const Dashboard = () => {
   const [stats,setStats] = useState({school:0,global:0,smart:0,assessment:0});
   const [local,setLocal] = useState()
   const getDist = async () => {
-    const result = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-dist");
+    const result = await axios.get("http://13.235.100.69:8000/api/admin/get-dist");
     console.log(result)
     setData(result.data.result);
   };
   const getStats = async()=> {
-    const result = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-stats");
+    const result = await axios.get("http://13.235.100.69:8000/api/admin/get-stats");
     setStats({
       school:result.data.data.schoolCount,
       global:result.data.data.global,

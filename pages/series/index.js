@@ -32,7 +32,7 @@ const Series = () => {
   const [toggle, setToggle] = useState(false);
   const getSeries = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
+      "http://13.235.100.69:8000/api/admin/get-series"
     );
     console.log(result.data.series);
     setData(result.data.series);
@@ -48,7 +48,7 @@ const Series = () => {
     }
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/add-series",
+        "http://13.235.100.69:8000/api/admin/add-series",
         { name: series }
       );
       if (result.data.ok) {
@@ -71,7 +71,7 @@ const Series = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/delete-series",
+        "http://13.235.100.69:8000/api/admin/delete-series",
         { id: item._id }
       );
       if (result.data.ok) {

@@ -18,14 +18,14 @@ import Router from "next/router";
 const School = () => {
   const [data, setData] = useState([]);
   const getSchool = async () => {
-    const res = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-schools");
+    const res = await axios.get("http://13.235.100.69:8000/api/admin/get-schools");
     console.log(res.data.result);
     setData(res.data.result);
   };
 
   const handleDelete = async (id) => {
     const result = await axios.post(
-      "https://infopubsliher-backend.onrender.com/api/admin/delete-school",
+      "http://13.235.100.69:8000/api/admin/delete-school",
       { id: id._id }
     );
     if (result.data.ok) {
@@ -76,7 +76,7 @@ const School = () => {
                       <Td>
                         <Select onChange={(e) => {
                           const confirm = window.confirm("Are you sure ?");
-                          axios.post("https://infopubsliher-backend.onrender.com/api/admin/update-school", { id: item._id, status: e.target.value })
+                          axios.post("http://13.235.100.69:8000/api/admin/update-school", { id: item._id, status: e.target.value })
                             .then(res => {
                               if (res.data.ok) {
                                 alert(res.data.message);

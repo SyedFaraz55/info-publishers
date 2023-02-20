@@ -30,14 +30,14 @@ const School = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
   const getLessons = async () => {
-    const res = await axios.post("https://infopubsliher-backend.onrender.com/api/admin/getLessonsById", { id: Router.query.q });
+    const res = await axios.post("http://13.235.100.69:8000/api/admin/getLessonsById", { id: Router.query.q });
     console.log(res.data.result);
     setData(res.data.result);
   };
   const router = useRouter();
   const handleDelete = async (id) => {
     const result = await axios.post(
-      "https://infopubsliher-backend.onrender.com/api/admin/delete-lesson",
+      "http://13.235.100.69:8000/api/admin/delete-lesson",
       { id: id._id }
     );
     if (result.data.ok) {
@@ -165,13 +165,11 @@ const School = () => {
                     setVideo(item)
                   }} mt={2} p={2} border="1px" borderColor={"gray.300"} borderRadius={4} >
                     <Text>{item?.name}</Text>
-                    <VideoImageThumbnail
-                      videoUrl={item?.link}
-                      thumbnailHandler={(thumbnail) => console.log(thumbnail)}
-                      width={30}
-                      height={30}
-                      alt="my test video"
-                    />
+                    <iframe className='video'
+                      title='Youtube player'
+                      sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
+                      src={`https://youtube.com/embed/${item?.link?.split("v=")[1]}?autoplay=0`}>
+                    </iframe>
                   </Box>
                 })
               }
@@ -180,15 +178,11 @@ const School = () => {
 
           <CustomModal size={"xl"} isOpen={isOpen2} onClose={onClose2}>
             <Box style={{ width: "100%", height: "auto" }}>
-              <Player
-                fluid
-                autoPlay
-              >
-                <source src={video?.link} />
-                <ControlBar autoHide={false} />
-                <BigPlayButton position="center" />
-
-              </Player>
+              <iframe className='video'
+                title='Youtube player'
+                sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
+                src={`https://youtube.com/embed/${current?.link?.split("v=")[1]}?autoplay=0`}>
+              </iframe>
             </Box>
           </CustomModal>
         </Box>

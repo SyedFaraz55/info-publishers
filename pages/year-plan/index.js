@@ -39,7 +39,7 @@ const YearPlan = () => {
     const [current, setCurrent] = useState({})
     const getYearPlan = async () => {
         const result = await axios.get(
-            "https://infopubsliher-backend.onrender.com/api/admin/get-year-plan"
+            "http://13.235.100.69:8000/api/admin/get-year-plan"
         );
         console.log(result.data.data);
         setData(result.data.data);
@@ -51,7 +51,7 @@ const YearPlan = () => {
         const ret = confirm("Are you sure?");
         if (ret) {
             const result = await axios.post(
-                "https://infopubsliher-backend.onrender.com/api/admin/delete-year-plan",
+                "http://13.235.100.69:8000/api/admin/delete-year-plan",
                 { id: item._id }
             );
             if (result.data.ok) {

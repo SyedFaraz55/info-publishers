@@ -34,7 +34,7 @@ const Notices = () => {
   const [toggle, setToggle] = useState(false);
   const getSeries = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com/api/admin/get-notices"
+      "http://13.235.100.69:8000/api/admin/get-notices"
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -50,7 +50,7 @@ const Notices = () => {
     }
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/notice",
+        "http://13.235.100.69:8000/api/admin/notice",
         state
       );
       if (result.data.ok) {
@@ -72,7 +72,7 @@ const Notices = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com/api/admin/delete-notices",
+        "http://13.235.100.69:8000/api/admin/delete-notices",
         { id: item._id }
       );
       if (result.data.ok) {
