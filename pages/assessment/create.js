@@ -29,7 +29,7 @@ const Create = () => {
     const [toggle, setToggle] = useState(false);
     const getSeries = async () => {
         const result = await axios.get(
-            "http://13.235.100.69:8000/api/admin/get-series"
+            "https://infopubsliher-backend.onrender.com//api/admin/get-series"
         );
         console.log(result.data.series);
         setData(result.data.series);
@@ -37,7 +37,7 @@ const Create = () => {
 
     const getClasses = async () => {
         const { data } = await axios.post(
-            "http://13.235.100.69:8000/api/admin/getClassById",
+            "https://infopubsliher-backend.onrender.com//api/admin/getClassById",
             { id: series }
         );
         if (data.result) {
@@ -48,7 +48,7 @@ const Create = () => {
 
     const getSubjects = async () => {
         const result = await axios.post(
-            "http://13.235.100.69:8000/api/admin/get-subjects",
+            "https://infopubsliher-backend.onrender.com//api/admin/get-subjects",
             { id: selectedClass }
         );
         console.log(result.data.result, 'all');
@@ -57,7 +57,7 @@ const Create = () => {
 
     const getLessons = async () => {
 
-        const res = await axios.post("http://13.235.100.69:8000/api/admin/getLessonsById", { id: selectedSubject });
+        const res = await axios.post("https://infopubsliher-backend.onrender.com//api/admin/getLessonsById", { id: selectedSubject });
         console.log(res.data.result, 'lessons');
         setLessons(res.data.result);
     };
@@ -66,7 +66,7 @@ const Create = () => {
         const ret = confirm("Are you sure?");
         if (ret) {
             const result = await axios.post(
-                "http://13.235.100.69:8000/api/admin/delete-series",
+                "https://infopubsliher-backend.onrender.com//api/admin/delete-series",
                 { id: item._id }
             );
             if (result.data.ok) {
@@ -91,7 +91,7 @@ const Create = () => {
         return
         try {
             const result = await axios.post(
-                "http://13.235.100.69:8000/api/admin/add-teaching",
+                "https://infopubsliher-backend.onrender.com//api/admin/add-teaching",
                 { ...state, id: selectedLesson }
             );
             if (result.data.ok) {

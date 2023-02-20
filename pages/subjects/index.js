@@ -42,7 +42,7 @@ const Subjects = () => {
       subject: subject
     }
     axios
-      .post("http://13.235.100.69:8000/api/admin/add-subject", payload)
+      .post("https://infopubsliher-backend.onrender.com//api/admin/add-subject", payload)
       .then((res) => {
         if (res.data.ok) {
           alert("Subject Added");
@@ -64,7 +64,7 @@ const Subjects = () => {
       console.log(id);
 
       const result = await axios.post(
-        "http://13.235.100.69:8000/api/admin/delete-subject",
+        "https://infopubsliher-backend.onrender.com//api/admin/delete-subject",
         { id: id._id }
       );
       if (result.data.ok) {
@@ -78,7 +78,7 @@ const Subjects = () => {
 
   const getSubjects = async () => {
     const result = await axios.post(
-      "http://13.235.100.69:8000/api/admin/get-subjects",
+      "https://infopubsliher-backend.onrender.com//api/admin/get-subjects",
       { id: router.query.q }
     );
     console.log(result.data.result, 'all');

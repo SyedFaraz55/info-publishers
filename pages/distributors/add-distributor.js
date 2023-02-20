@@ -26,7 +26,7 @@ const AddDistributor = () => {
     setLoading(true);
     try {
       const result = await axios.post(
-        "http://13.235.100.69:8000/api/admin/add-distributor",
+        "https://infopubsliher-backend.onrender.com//api/admin/add-distributor",
         state
       );
       console.log(result)

@@ -29,7 +29,7 @@ const AddSchool = () => {
   const [loading, setLoading] = useState(false);
   const [selectedClass, setSelectedClasses] = useState([]);
   const getDist = async () => {
-    const res = await axios.get("http://13.235.100.69:8000/api/admin/get-dist");
+    const res = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-dist");
     console.log(res.data.result);
     setDist(res.data.result);
   };
@@ -38,14 +38,14 @@ const AddSchool = () => {
   }, [selectedClass]);
   const getSeries = async () => {
     const result = await axios.get(
-      "http://13.235.100.69:8000/api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com//api/admin/get-series"
     );
     console.log(result.data.series);
     setSeries(result.data.series);
   };
   const getClasses = async () => {
     const { data } = await axios.post(
-      "http://13.235.100.69:8000/api/admin/getClassById",
+      "https://infopubsliher-backend.onrender.com//api/admin/getClassById",
       { id: seriesVal }
     );
     console.log(data.result[0]);
@@ -75,7 +75,7 @@ const AddSchool = () => {
 
     try {
       const result = await axios.post(
-        "http://13.235.100.69:8000/api/admin/add-school",
+        "https://infopubsliher-backend.onrender.com//api/admin/add-school",
         { ...state, classes: selectedClass }
       );
       if (result.data.ok) {

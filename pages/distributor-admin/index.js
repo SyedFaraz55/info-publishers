@@ -18,7 +18,7 @@ const DistributorAdmin = () => {
   const [plan, setPlan] = useState()
   const router = useRouter();
   const getStats = async () => {
-    const result = await axios.get(`http://13.235.100.69:8000/api/admin/get-stats/${local?.user._id}`);
+    const result = await axios.get(`https://infopubsliher-backend.onrender.com//api/admin/get-stats/${local?.user._id}`);
     setStats({
       school: result.data.data.schoolCount,
       global: result.data.data.global,
@@ -28,11 +28,11 @@ const DistributorAdmin = () => {
 
   }
   const getYearPlan = async () => {
-    const rs = await axios.get("http://13.235.100.69:8000/api/admin/get-year-plan");
+    const rs = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-year-plan");
     setPlan(rs.data.data)
   }
   const getNotices = async () => {
-    const rs = await axios.post("http://13.235.100.69:8000/api/admin/get-notice", {
+    const rs = await axios.post("https://infopubsliher-backend.onrender.com//api/admin/get-notice", {
       role: local?.user.role,
     });
     setNotices(rs.data.data[0]);

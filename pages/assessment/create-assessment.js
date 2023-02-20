@@ -48,7 +48,7 @@ const Create = () => {
             console.log({ id: router.query.q, name: state.name, questions });
             try {
                 const result = await axios.post(
-                    "http://13.235.100.69:8000/api/admin/add-assessment",
+                    "https://infopubsliher-backend.onrender.com//api/admin/add-assessment",
                     { id: router.query.q, name: state.name, questions }
                 );
                 if (result.data.ok) {

@@ -21,18 +21,18 @@ const Distributors = () => {
   const [current, setView] = useState({});
   const [schools, setSchools] = useState([]);
   const getDist = async () => {
-    const result = await axios.get("http://13.235.100.69:8000/api/admin/get-dist");
+    const result = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-dist");
     setData(result.data.result);
   };
   const getDistById = async () => {
     console.log(current)
-    const result = await axios.get(`http://13.235.100.69:8000/api/admin/get-distById/${current._id}`);
+    const result = await axios.get(`https://infopubsliher-backend.onrender.com//api/admin/get-distById/${current._id}`);
     setSchools(result.data.result)
   };
   const handleDelete = async (item) => {
     const ret = confirm("Are you sure?")
     if (ret) {
-      const result = await axios.post("http://13.235.100.69:8000/api/admin/delete-dist", { id: item._id });
+      const result = await axios.post("https://infopubsliher-backend.onrender.com//api/admin/delete-dist", { id: item._id });
       if (result.data.ok) {
         alert(result.data.message)
         getDist();
@@ -94,7 +94,7 @@ const Distributors = () => {
                       <Td>
                         <Select onChange={(e) => {
                           const confirm = window.confirm("Are you sure ?");
-                          axios.post("http://13.235.100.69:8000/api/admin/update-dist", { id: item._id, status: e.target.value })
+                          axios.post("https://infopubsliher-backend.onrender.com//api/admin/update-dist", { id: item._id, status: e.target.value })
                             .then(res => {
                               if (res.data.ok) {
                                 alert(res.data.message);

@@ -39,18 +39,18 @@ const App = () => {
   };
   useEffect(() => {
     if (role == 0) {
-      setURL("http://13.235.100.69:8000/api/admin/login");
+      setURL("https://infopubsliher-backend.onrender.com//api/admin/login");
     }
 
     if (role == 1) {
-      setURL("http://13.235.100.69:8000/api/admin/dist-login");
+      setURL("https://infopubsliher-backend.onrender.com//api/admin/dist-login");
     }
     if (role == 2) {
-      setURL("http://13.235.100.69:8000/api/admin/school-login");
+      setURL("https://infopubsliher-backend.onrender.com//api/admin/school-login");
     }
 
     if (role == 3) {
-      setURL('http://13.235.100.69:8000/api/admin/student-login')
+      setURL('https://infopubsliher-backend.onrender.com//api/admin/student-login')
     }
   }, [role]);
   const handleLogin = async (e) => {

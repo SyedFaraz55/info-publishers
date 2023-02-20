@@ -40,7 +40,7 @@ const Teaching = () => {
   const [current, setCurrent] = useState({})
   const getAnimation = async () => {
     const result = await axios.get(
-      "http://13.235.100.69:8000/api/admin/get-animation"
+      "https://infopubsliher-backend.onrender.com//api/admin/get-animation"
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -52,7 +52,7 @@ const Teaching = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "http://13.235.100.69:8000/api/admin/delete-animation",
+        "https://infopubsliher-backend.onrender.com//api/admin/delete-animation",
         { id: item._id }
       );
       if (result.data.ok) {
