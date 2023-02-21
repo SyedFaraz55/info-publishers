@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import "../../node_modules/video-react/dist/video-react.css"; // import css
 
-import { Player,ControlBar ,BigPlayButton} from 'video-react';
+import { Player, ControlBar, BigPlayButton } from 'video-react';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
@@ -35,12 +35,12 @@ const Teaching = () => {
   const [series, setSeries] = useState("");
   const [loading, setLoading] = useState(false);
   const [toggle, setToggle] = useState(false);
-  const {isOpen,onOpen,onClose} = useDisclosure()
-  const [current,setCurrent] = useState({});
-  const [local,setLocal] = useState()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [current, setCurrent] = useState({});
+  const [local, setLocal] = useState()
   const getTeaching = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com//api/admin/get-teaching"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-teaching"
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -56,7 +56,7 @@ const Teaching = () => {
     }
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/add-series",
+        "https://infopubsliher-backend.onrender.com/api/admin/add-series",
         { name: series }
       );
       if (result.data.ok) {
@@ -79,7 +79,7 @@ const Teaching = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/delete-teaching",
+        "https://infopubsliher-backend.onrender.com/api/admin/delete-teaching",
         { id: item._id }
       );
       if (result.data.ok) {
@@ -91,8 +91,8 @@ const Teaching = () => {
     }
   };
   useEffect(() => {
-   getTeaching();
-   setLocal(JSON.parse(localStorage.getItem('@login')))
+    getTeaching();
+    setLocal(JSON.parse(localStorage.getItem('@login')))
   }, []);
   return (
     <Box>
@@ -102,17 +102,17 @@ const Teaching = () => {
           <Flex alignItems={"center"} justifyContent={"space-between"} p={4}>
             <Text fontSize="2xl">Teaching</Text>
 
-         {local?.user?.role == '0' ? 
-          <Button
-              onClick={() => {
-                router.push("/teaching/create")
-              }}
-              variant={"solid"}
-              colorScheme="green"
-            >
-              Create
-            </Button> 
-        :null } 
+            {local?.user?.role == '0' ?
+              <Button
+                onClick={() => {
+                  router.push("/teaching/create")
+                }}
+                variant={"solid"}
+                colorScheme="green"
+              >
+                Create
+              </Button>
+              : null}
           </Flex>
         </Box>
         <Box p={4}>
@@ -136,7 +136,7 @@ const Teaching = () => {
 
                             setCurrent(item);
                             onOpen()
-                           
+
                           }}
                           variant={"link"}
                           colorScheme={"green"}
@@ -144,18 +144,18 @@ const Teaching = () => {
                           View
                         </Button>
                       </Td>
-                     {local?.user?.role == '0' ? 
-                     
-                    <Td>
-                        <Button
-                          onClick={() => handleDelete(item)}
-                          variant={"link"}
-                          colorScheme={"red"}
-                        >
-                          Delete
-                        </Button>
-                      </Td>
-                    :null} 
+                      {local?.user?.role == '0' ?
+
+                        <Td>
+                          <Button
+                            onClick={() => handleDelete(item)}
+                            variant={"link"}
+                            colorScheme={"red"}
+                          >
+                            Delete
+                          </Button>
+                        </Td>
+                        : null}
                     </Tr>
                   );
                 })}
@@ -163,17 +163,15 @@ const Teaching = () => {
             </Table>
           </TableContainer>
           <CustomModal size={"xl"} isOpen={isOpen} onClose={onClose}>
-            <Box style={{width:"100%",height:"auto"}}>
-              <Player
-              fluid
-              autoPlay
-              preload="auto"
-              >
-                <source src={"https://www.youtube.com/watch?v=A2ezicN5tqw&list=RDMMGcMd_DHkxY0&index=10"} />
-                <ControlBar autoHide={false} />
-                <BigPlayButton position="center" />
-
-              </Player>
+            <Box style={{ width: "100%", height: "auto" }}>
+              <iframe className='video'
+                title='Youtube player'
+                width={"100%"}
+                height={300}
+                allowFullScreen={true}
+                sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
+                src={`https://youtube.com/embed/${current?.link?.split("v=")[1]}?autoplay=0`}>
+              </iframe>
             </Box>
           </CustomModal>
         </Box>

@@ -36,12 +36,12 @@ const Dashboard = () => {
   const [stats,setStats] = useState({school:0,global:0,smart:0,assessment:0});
   const [local,setLocal] = useState()
   const getDist = async () => {
-    const result = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-dist");
+    const result = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-dist");
     console.log(result)
     setData(result.data.result);
   };
   const getStats = async()=> {
-    const result = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-stats");
+    const result = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-stats");
     setStats({
       school:result.data.data.schoolCount,
       global:result.data.data.global,
@@ -119,9 +119,9 @@ Please login to continue <Link style={{marginLeft:10}} href={"/"} >Click here</L
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {data?.map((item) => {
+                  {data?.map((item,index) => {
                     return (
-                      <Tr style={{ background: "#fff" }}>
+                      <Tr key={index} style={{ background: "#fff" }}>
                         <Td>{item.firmName}</Td>
                         <Td>{item.name}</Td>
                         <Td>{item.mobile}</Td>

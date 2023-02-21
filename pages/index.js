@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Logo from "../public/images/info.png";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Router, { useRouter } from "next/router";
 import {
@@ -16,13 +16,14 @@ import {
   Select,
 } from "@chakra-ui/react";
 import axiosInstance from "../Services/core";
+import { UserAuth } from "../hooks/auth";
 
 const App = () => {
   const [role, setRole] = useState();
   const [url, setURL] = useState();
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const {
     isOpen: isVisible,
     onClose,
@@ -33,24 +34,25 @@ const App = () => {
     password: "",
   });
   const router = useRouter();
+  const { setLocalStorage } = useContext(UserAuth)
 
   const handleChange = (event) => {
     setRole(event.target.value);
   };
   useEffect(() => {
     if (role == 0) {
-      setURL("https://infopubsliher-backend.onrender.com//api/admin/login");
+      setURL("https://infopubsliher-backend.onrender.com/api/admin/login");
     }
 
     if (role == 1) {
-      setURL("https://infopubsliher-backend.onrender.com//api/admin/dist-login");
+      setURL("https://infopubsliher-backend.onrender.com/api/admin/dist-login");
     }
     if (role == 2) {
-      setURL("https://infopubsliher-backend.onrender.com//api/admin/school-login");
+      setURL("https://infopubsliher-backend.onrender.com/api/admin/school-login");
     }
 
     if (role == 3) {
-      setURL('https://infopubsliher-backend.onrender.com//api/admin/student-login')
+      setURL('https://infopubsliher-backend.onrender.com/api/admin/student-login')
     }
   }, [role]);
   const handleLogin = async (e) => {
@@ -63,13 +65,13 @@ const App = () => {
       });
       if (result.data.ok) {
         router.push("/dashboard");
-        localStorage.setItem("@login", JSON.stringify(result.data));
+        setLocalStorage(result.data)
         axiosInstance.defaults.headers.common['x-auth-token'] = result.data.token
 
-    setLoading(false)
+        setLoading(false)
       } else {
         setError(result.data);
-    setLoading(false)
+        setLoading(false)
       }
     } else {
       const result = await axios.post(url, {
@@ -78,49 +80,49 @@ const App = () => {
 
       if (result.data.ok) {
         if (result.data.user.role == 2) {
-          localStorage.setItem("@login", JSON.stringify(result.data));
+          setLocalStorage(result.data)
           if (result.data.user.active) {
 
-    setLoading(false)
-            localStorage.setItem("@login", JSON.stringify(result.data));
+            setLoading(false)
+            setLocalStorage(result.data)
             router.push("/school-admin")
           } else {
             alert("User is de-active. Please contact administrator");
-    setLoading(false)
+            setLoading(false)
             return
           }
         } else if (result.data.user.role == 1) {
           if (result.data.user.active) {
 
-            localStorage.setItem("@login", JSON.stringify(result.data));
-    setLoading(false)
+            setLocalStorage(result.data)
+            setLoading(false)
             router.push("/distributor-admin")
           } else {
             alert("User is de-active. Please contact administrator");
-    setLoading(false)
+            setLoading(false)
             return
           }
           axiosInstance.defaults.headers.common['x-auth-token'] = result.data.token
         } else if (result.data.user.role == 3) {
           if (result.data.user.active) {
 
-            localStorage.setItem("@login", JSON.stringify(result.data));
-    setLoading(false)
+            setLocalStorage(result.data)
+            setLoading(false)
             router.push("/student-login")
           } else {
             alert("User is de-active. Please contact administrator");
-    setLoading(false)
+            setLoading(false)
 
             return
           }
 
         } else {
           alert("Something went wrong")
-    setLoading(false)
+          setLoading(false)
         }
       } else {
         setError(result.data);
-    setLoading(false)
+        setLoading(false)
       }
     }
   };
@@ -174,7 +176,7 @@ const App = () => {
             </InputGroup>
             <InputGroup mt={4} style={{ marginTop: 10 }}>
               <Input
-                placeholder="Mobile"
+                placeholder="Email or Username"
                 onChange={(e) =>
                   setUser((prevState) => ({
                     ...prevState,

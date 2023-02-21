@@ -1,7 +1,8 @@
 import Router, { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../Services/core";
-import { Alert, AlertTitle, Box } from "@chakra-ui/react";
+import { Alert, AlertTitle, Box, Container } from "@chakra-ui/react";
+import Quiz from "../../components/Quiz";
 
 
 
@@ -19,9 +20,19 @@ const View = () => {
         getAssessment();
     }, [])
 
+  
+
+
     useEffect(() => {
-        getAssessment();
-    }, [router.query])
+        if (!router.query.q) {
+            router.push("/examination")
+            return
+        } else {
+
+            getAssessment();
+        }
+
+    }, [router])
 
 
     return <Box>
@@ -30,9 +41,11 @@ const View = () => {
             nrOfQuestions: "4",
             questions: data && data?.questions
         }} /> : null} */}
-        <Alert>
-            <AlertTitle>Page is in construction.</AlertTitle>
-        </Alert>
+        <Container maxW={"container.lg"} mt={10} >
+
+            <Quiz quiz={data} setData={setData} />
+        </Container>
+
     </Box>
 
 }

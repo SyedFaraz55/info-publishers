@@ -9,7 +9,7 @@ import Quiz from "../../components/Quiz";
 
 
 const View = () => {
-const [data,setData] = useState([])  
+    const [data, setData] = useState([])
     const router = useRouter()
     const getAssessment = async () => {
         if (!router.query.q) {
@@ -24,7 +24,7 @@ const [data,setData] = useState([])
     };
     useEffect(() => {
         if (!router.query.q) {
-            router.push("/assessment")
+            router.back()
             return
         } else {
 
@@ -34,7 +34,7 @@ const [data,setData] = useState([])
 
     useEffect(() => {
         if (!router.query.q) {
-            router.push("/assessment")
+            router.back()
             return
         } else {
 
@@ -43,12 +43,12 @@ const [data,setData] = useState([])
 
     }, [router])
 
-   
-   
-console.log(data)
+
+
+    console.log(data,router)
     return <Container maxW={"container.lg"} mt={10} >
-       
-        <Quiz quiz={data} setData={setData}  />
+
+        <Quiz quiz={data} setData={setData} />
     </Container>
 
 }

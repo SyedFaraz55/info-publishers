@@ -1,6 +1,6 @@
-import { Box, Button, Container, Flex, Stat, StatLabel, StatNumber, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Grid, Spinner, Stat, StatLabel, StatNumber, Text, useDisclosure } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import Header from "../../components/Header";
 import axiosInstance from "../../Services/core";
 import {
@@ -17,81 +17,77 @@ import {
 import Link from "next/link";
 import CustomModal from "../../components/Modal";
 import { BigPlayButton, ControlBar, Player } from "video-react";
-
+import { UserAuth } from "../../hooks/auth";
+import { AiFillPlayCircle } from 'react-icons/ai'
 const Teaching = () => {
     const [local, setLocal] = useState();
     const [data, setData] = useState([])
     const router = useRouter();
     const [current, setCurrent] = useState();
     const { isOpen, onOpen, onClose } = useDisclosure()
-    useEffect(() => {
-        setLocal(JSON.parse(localStorage.getItem("@login")))
-    }, [])
+    const { user } = useContext(UserAuth)
+    const [loading,setLoading] =useState(false)
 
     const getTeachingData = async () => {
-        const rs = await axiosInstance.get(`/admin/get-teaching/${local?.user?.standard}`);
+        setLoading(true)
+        const rs = await axiosInstance.get(`/admin/get-teaching/${user?.user?.standard}`);
+        if(rs.data.ok) {
         setData(rs.data.data)
+        setLoading(false)
         console.log(rs.data.data)
+        }else {
+            alert("Error loading data")
+            setLoading(false)
+        }
     }
 
-    useLayoutEffect(() => {
-        if (local) {
-            getTeachingData();
-        }
-    }, [local])
+    useEffect(() => {
+    if(user) {
+
+        getTeachingData()
+    }
+    }, [user])
+
+
     return <>
         <Header />
         <Box p={5}>
             <Text fontSize={"2xl"}>Online Teaching</Text>
-            <Box mt={10}>
-                <TableContainer>
-                    <Table size='sm'>
-                        <Thead>
-                            <Tr>
-                                <Th>Name</Th>
-                                <Th>Link/Url</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {
-                                data?.map(item => {
-                                    return <Tr>
-                                        <Td>{item?.name}</Td>
-                                        <Td>
-                                            <Button
-                                                onClick={() => {
-
-
-                                                        setCurrent(item);
-                                                        onOpen()
-
-                                                }}
-                                                variant={"link"}
-                                                colorScheme={"green"}
-                                            >
-                                                View Content
-                                            </Button>
-                                        </Td>
-                                    </Tr>
-                                })
-                            }
-
-                        </Tbody>
-                    </Table>
-                </TableContainer>
-            </Box>
+        {loading ? <Spinner size={"lg"} mt={3} /> : 
+           <Grid templateColumns='repeat(4, 1fr)' gap={2} mt={5}>
+                {
+                    data?.map(item => {
+                        return <Box width={300} marginTop={5} bg={"#fff"} boxShadow="md">
+                            <iframe className='video'
+                                title='Youtube player'
+                                width="100%"
+                                height={200}
+                                allowFullScreen={true}
+                                sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
+                                src={`https://youtube.com/embed/${item?.link?.split("v=")[1]}?autoplay=0`}>
+                            </iframe>
+                            <Flex alignItems={"center"} justifyContent="space-between" padding={2}>
+                                <Text>{item?.name}</Text>
+                                <AiFillPlayCircle size={26} cursor="pointer" color="#3181ce" onClick={() => {
+                                    onOpen();
+                                    setCurrent(item)
+                                }} />
+                            </Flex>
+                        </Box>
+                    })
+                }
+            </Grid>
+        } 
             <CustomModal size={"xl"} isOpen={isOpen} onClose={onClose}>
                 <Box style={{ width: "100%", height: "auto" }}>
-                    <Player
-                        fluid
-                        autoPlay
-                        preload="auto"
-                    >
-                        <source src={current?.link} />
-                        <ControlBar autoHide={false} />
-                        <BigPlayButton position="center" />
-
-                    </Player>
+                    <iframe className='video'
+                        title='Youtube player'
+                        width="100%"
+                        height={300}
+                        allowFullScreen={true}
+                        sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
+                        src={`https://youtube.com/embed/${current?.link?.split("v=")[1]}?autoplay=0`}>
+                    </iframe>
                 </Box>
             </CustomModal>
         </Box>

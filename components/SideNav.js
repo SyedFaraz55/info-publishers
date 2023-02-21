@@ -17,7 +17,7 @@ export default function SideNav() {
   const [local, setLocal] = useState();
   const getSeries = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com//api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
     );
     console.log(result.data.series, 'series');
     setData(result.data.series);
@@ -83,7 +83,7 @@ export default function SideNav() {
 
             <Flex p={2} ml={4} alignItems={"center"}>
 
-        <Image src={Students} style={{ marginRight: 10 }} />
+              <Image src={Students} style={{ marginRight: 10 }} />
               {local?.user?.role == "1" || local?.user?.role == 0 ? (
                 <Link legacyBehavior href={`/gb?q=${item._id}`}>
                   <a>{item?.name}</a>
@@ -101,18 +101,20 @@ export default function SideNav() {
 
 
 
-      <Flex p={2} ml={4} alignItems={"center"}>
-        <Image src={Students} style={{ marginRight: 10 }} />
-        <Link legacyBehavior href={local?.user?.role == 2 ? `/schools/view?q=${local?.user?._id}` : "/students"}>
-          <a>Studensts</a>
-        </Link>
+      <Box>
+        <Flex p={2} ml={4} alignItems={"center"}>
+          <Image src={Students} style={{ marginRight: 10 }} />
+          <Link legacyBehavior href={local?.user?.role == 2 ? `/schools/view?q=${local?.user?._id}` : "/students"}>
+            <a>Students</a>
+          </Link>
 
-      </Flex>
-      <Divider marginTop={3} />
+        </Flex>
+
+        <Divider marginTop={3} />
+      </Box>
 
 
-
-      {local?.user?.role == '1' ? null : <>
+      {local?.user?.role == '1' ? null : <Box>
 
         <Flex p={2} ml={4} alignItems={"center"}>
           <Image src={Online} style={{ marginRight: 10 }} />
@@ -121,7 +123,7 @@ export default function SideNav() {
           </Link>
         </Flex>
         <Divider marginTop={3} />
-      </>}
+      </Box>}
 
 
       {local?.user?.role == '1' ? null : <>

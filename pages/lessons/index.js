@@ -30,14 +30,14 @@ const School = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
   const getLessons = async () => {
-    const res = await axios.post("https://infopubsliher-backend.onrender.com//api/admin/getLessonsById", { id: Router.query.q });
+    const res = await axios.post("https://infopubsliher-backend.onrender.com/api/admin/getLessonsById", { id: Router.query.q });
     console.log(res.data.result);
     setData(res.data.result);
   };
   const router = useRouter();
   const handleDelete = async (id) => {
     const result = await axios.post(
-      "https://infopubsliher-backend.onrender.com//api/admin/delete-lesson",
+      "https://infopubsliher-backend.onrender.com/api/admin/delete-lesson",
       { id: id._id }
     );
     if (result.data.ok) {
@@ -164,7 +164,6 @@ const School = () => {
                     onOpen2();
                     setVideo(item)
                   }} mt={2} p={2} border="1px" borderColor={"gray.300"} borderRadius={4} >
-                    <Text>{item?.name}</Text>
                     <iframe className='video'
                       title='Youtube player'
                       sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'

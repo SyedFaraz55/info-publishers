@@ -40,7 +40,7 @@ const Teaching = () => {
   const [current, setCurrent] = useState({})
   const getAnimation = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com//api/admin/get-animation"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-animation"
     );
     console.log(result.data.data);
     setData(result.data.data);
@@ -52,7 +52,7 @@ const Teaching = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/delete-animation",
+        "https://infopubsliher-backend.onrender.com/api/admin/delete-animation",
         { id: item._id }
       );
       if (result.data.ok) {
@@ -133,16 +133,14 @@ const Teaching = () => {
           </TableContainer>
           <CustomModal size={"xl"} isOpen={isOpen} onClose={onClose}>
             <Box style={{ width: "100%", height: "auto" }}>
-              <Player
-                fluid
-                autoPlay
-                preload="auto"
-              >
-                <source src={"https://www.youtube.com/watch?v=A2ezicN5tqw&list=RDMMGcMd_DHkxY0&index=10"} />
-                <ControlBar autoHide={false} />
-                <BigPlayButton position="center" />
-
-              </Player>
+            <iframe className='video'
+                title='Youtube player'
+                width={"100%"}
+                height={300}
+                allowFullScreen={true}
+                sandbox='allow-same-origin allow-forms allow-popups allow-scripts allow-presentation'
+                src={`https://youtube.com/embed/${current?.link?.split("v=")[1]}?autoplay=0`}>
+              </iframe> 
             </Box>
           </CustomModal>
         </Box>

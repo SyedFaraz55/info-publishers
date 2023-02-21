@@ -13,6 +13,7 @@ import {
   TagCloseButton,
   TagLabel,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -27,9 +28,10 @@ const AddSchool = () => {
   const [seriesVal, setSelectedSeries] = useState("");
   const [noClasses, setNoClasses] = useState()
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
   const [selectedClass, setSelectedClasses] = useState([]);
   const getDist = async () => {
-    const res = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-dist");
+    const res = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-dist");
     console.log(res.data.result);
     setDist(res.data.result);
   };
@@ -38,14 +40,14 @@ const AddSchool = () => {
   }, [selectedClass]);
   const getSeries = async () => {
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com//api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
     );
     console.log(result.data.series);
     setSeries(result.data.series);
   };
   const getClasses = async () => {
     const { data } = await axios.post(
-      "https://infopubsliher-backend.onrender.com//api/admin/getClassById",
+      "https://infopubsliher-backend.onrender.com/api/admin/getClassById",
       { id: seriesVal }
     );
     console.log(data.result[0]);
@@ -61,13 +63,13 @@ const AddSchool = () => {
     e.preventDefault();
     setLoading(true);
 
-    if(dist == ''){
+    if (dist == '') {
       alert("Please select distributors");
       setLoading(false);
       return
     }
 
-    if(seriesVal == '') {
+    if (seriesVal == '') {
       alert("Please select series");
       setLoading(false)
       return
@@ -75,17 +77,26 @@ const AddSchool = () => {
 
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/add-school",
+        "https://infopubsliher-backend.onrender.com/api/admin/add-school",
         { ...state, classes: selectedClass }
       );
       if (result.data.ok) {
         setLoading(false);
-        alert("School Added");
-      if(local?.user?.role == '1') {
- window.location.href = "/distributor-admin/schools";
-      } else {
- window.location.href = "/schools";
-      }
+        toast({
+          title: "School Added",
+          status: "success",
+          position: "top",
+          isClosable: true
+        })
+        if (local?.user?.role == '1') {
+          setTimeout(()=>{
+            window.location.href = "/distributor-admin/schools";
+          },2000)
+        } else {
+          setTimeout(()=> {
+            window.location.href = "/schools";
+          },2000)
+        }
       } else {
         new Error("Failed to add school");
         setLoading(false);
@@ -116,7 +127,7 @@ const AddSchool = () => {
           <Text ml={10} fontSize={"2xl"}>
             Add School
           </Text>
-          <Box ml={10} width={500} mt={4}>
+          <Box ml={10} width={600} mt={4}>
             <form method="post">
               <FormControl >
                 <FormLabel>Distributor or Firm Name</FormLabel>
@@ -254,7 +265,7 @@ const AddSchool = () => {
                     return (
                       <Button
                         mt={2}
-                        bg={"#fff"}
+
                         onClick={() => {
 
                           if (selectedClass.length >= state['noClasses']) {
@@ -324,7 +335,7 @@ const AddSchool = () => {
                 <Spinner />
               ) : (
                 <Button
-                type="submit"
+                  type="submit"
                   onClick={handleSubmit}
                   mt={4}
                   variant={"solid"}

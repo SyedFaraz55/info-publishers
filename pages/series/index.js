@@ -7,6 +7,7 @@ import {
   Input,
   Spinner,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -30,31 +31,53 @@ const Series = () => {
   const [series, setSeries] = useState("");
   const [loading, setLoading] = useState(false);
   const [toggle, setToggle] = useState(false);
+  const toast = useToast()
   const getSeries = async () => {
+    setLoading(true)
     const result = await axios.get(
-      "https://infopubsliher-backend.onrender.com//api/admin/get-series"
+      "https://infopubsliher-backend.onrender.com/api/admin/get-series"
     );
-    console.log(result.data.series);
-    setData(result.data.series);
+    if (result.data.ok) {
+      setLoading(false)
+      setData(result.data.series);
+    } else {
+      toast({
+        title: "Failed to load series",
+        isClosable: true,
+        position: "top",
+        status: "error"
+      })
+    }
   };
 
   const handleSeries = async () => {
     setLoading(true);
-    if(!series) {
-        alert("Please add series name")
-        setLoading(false)
-        setToggle(true)
-        return
+    if (!series) {
+      alert("Please add series name")
+      toast({
+        title: "Please add series name",
+        status: "error",
+        position: "top",
+        isClosable: true
+      })
+      setLoading(false)
+      setToggle(true)
+      return
     }
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/add-series",
+        "https://infopubsliher-backend.onrender.com/api/admin/add-series",
         { name: series }
       );
       if (result.data.ok) {
         setLoading(false);
         setToggle(false);
-        alert("Series Added");
+        toast({
+          title: "Series added",
+          status: "success",
+          position: "top",
+          isClosable: true
+        })
 
         getSeries();
       } else {
@@ -71,11 +94,17 @@ const Series = () => {
     const ret = confirm("Are you sure?");
     if (ret) {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/delete-series",
+        "https://infopubsliher-backend.onrender.com/api/admin/delete-series",
         { id: item._id }
       );
       if (result.data.ok) {
-        alert(result.data.message);
+        toast({
+          title: result.data.message,
+          status: "success",
+          position: "top",
+          isClosable: true
+        })
+
         getSeries();
       } else {
         new Error("Failed to delete");
@@ -90,17 +119,17 @@ const Series = () => {
       <Header />
       <Layout>
         <Box p={4}>
-        <Flex alignItems={"center"} justifyContent={"space-between"} p={4}>
-          <Text fontSize="2xl">Series</Text>
+          <Flex alignItems={"center"} justifyContent={"space-between"} p={4}>
+            <Text fontSize="2xl">Series</Text>
 
-          <Button
-            onClick={() => setToggle(!toggle)}
-            variant={"solid"}
-            colorScheme="green"
-          >
-            Create Series
-          </Button>
-        </Flex>
+            <Button
+              onClick={() => setToggle(!toggle)}
+              variant={"solid"}
+              colorScheme="green"
+            >
+              Create Series
+            </Button>
+          </Flex>
         </Box>
         <Box p={4}>
           {toggle ? (
@@ -125,44 +154,46 @@ const Series = () => {
               )}
             </FormControl>
           ) : null}
-          <TableContainer mt={0}>
-            <Table variant="striped">
-              <Thead>
-                <Tr>
-                  <Th>Name</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data?.map((item) => {
-                  return (
-                    <Tr key={item._id} style={{ background: "#fff" }}>
-                      <Td>{item.name}</Td>
-                      <Td>
-                        <Button
-                          onClick={() => {
-                            router.push(`/series/${item._id}`)
-                          }}
-                          variant={"link"}
-                          colorScheme={"green"}
-                        >
-                          View
-                        </Button>
-                      </Td>
-                      <Td>
-                        <Button
-                          onClick={() => handleDelete(item)}
-                          variant={"link"}
-                          colorScheme={"red"}
-                        >
-                          Delete
-                        </Button>
-                      </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          {
+            loading ? <Spinner size={"lg"} mt={2} /> : <TableContainer mt={0}>
+              <Table variant="striped">
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {data?.map((item) => {
+                    return (
+                      <Tr key={item._id} style={{ background: "#fff" }}>
+                        <Td>{item.name}</Td>
+                        <Td>
+                          <Button
+                            onClick={() => {
+                              router.push(`/series/${item._id}`)
+                            }}
+                            variant={"link"}
+                            colorScheme={"green"}
+                          >
+                            View
+                          </Button>
+                        </Td>
+                        <Td>
+                          <Button
+                            onClick={() => handleDelete(item)}
+                            variant={"link"}
+                            colorScheme={"red"}
+                          >
+                            Delete
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          }
         </Box>
       </Layout>
     </Box>

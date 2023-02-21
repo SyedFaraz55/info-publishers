@@ -40,7 +40,7 @@ const Classes = () => {
 
   const getClasses = async () => {
     const { data } = await axios.post(
-      "https://infopubsliher-backend.onrender.com//api/admin/getClassById",
+      "https://infopubsliher-backend.onrender.com/api/admin/getClassById",
       { id: router.query.id }
     );
     console.log(data.result[0]);
@@ -54,7 +54,7 @@ const Classes = () => {
         classes: [{ name: classname }],
       };
       axios
-        .post("https://infopubsliher-backend.onrender.com//api/admin/add-class", payload)
+        .post("https://infopubsliher-backend.onrender.com/api/admin/add-class", payload)
         .then((res) => {
           if (res.data.ok) {
             alert("Class Added");
@@ -78,7 +78,7 @@ const Classes = () => {
     }
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/update-class",
+        "https://infopubsliher-backend.onrender.com/api/admin/update-class",
         { id: router.query.id, data }
       );
       if (result.data.ok) {
@@ -108,7 +108,7 @@ const Classes = () => {
         classes: deleted,
       });
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/delete-class",
+        "https://infopubsliher-backend.onrender.com/api/admin/delete-class",
         { id: router.query.id, data: deleted }
       );
       if (result.data.ok) {

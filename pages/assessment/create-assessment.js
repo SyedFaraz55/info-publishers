@@ -48,7 +48,7 @@ const Create = () => {
             console.log({ id: router.query.q, name: state.name, questions });
             try {
                 const result = await axios.post(
-                    "https://infopubsliher-backend.onrender.com//api/admin/add-assessment",
+                    "https://infopubsliher-backend.onrender.com/api/admin/add-assessment",
                     { id: router.query.q, name: state.name, questions }
                 );
                 if (result.data.ok) {
@@ -107,7 +107,7 @@ const Create = () => {
                             </Box>
                             <FormControl mt={2} isRequired>
                                 <FormLabel>Options</FormLabel>
-                                <Textarea onKeyDown={e => {
+                                <Input onKeyDown={e => {
                                     if (e.keyCode == 13) {
                                         setForm(prevState => ({ ...prevState, answers: [...prevState.answers, answer] }))
                                         setAnswer({id:"",name:""})

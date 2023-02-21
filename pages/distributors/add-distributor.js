@@ -8,6 +8,7 @@ import {
   Input,
   Spinner,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
@@ -16,6 +17,7 @@ import Layout from "../../components/Layout";
 const AddDistributor = () => {
   const [state, setState] = useState({});
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
   const handleChange = (e) => {
     setState((prevState) => ({
       ...prevState,
@@ -23,17 +25,76 @@ const AddDistributor = () => {
     }));
   };
   const handleSubmit = async () => {
+
+    if(!state.firmName) {
+      toast({
+        title:"Firm Name is required",
+        status:"error",
+        position:"top",
+        isClosable:true
+      })
+      return
+    }
+
+    if(!state.name) {
+      toast({
+        title:"Name is required",
+        status:"error",
+        position:"top",
+        isClosable:true
+      })
+      return
+    }
+
+
+    if(!state.mobile) {
+      toast({
+        title:"Mobile is required",
+        status:"error",
+        position:"top",
+        isClosable:true
+      })
+      return
+    }
+
+    if(!state.username) {
+      toast({
+        title:"Username is required",
+        status:"error",
+        position:"top",
+        isClosable:true
+      })
+      return
+    }
+
+    if(!state.password) {
+      toast({
+        title:"Password is required",
+        status:"error",
+        position:"top",
+        isClosable:true
+      })
+      return
+    }
+
     setLoading(true);
     try {
       const result = await axios.post(
-        "https://infopubsliher-backend.onrender.com//api/admin/add-distributor",
+        "https://infopubsliher-backend.onrender.com/api/admin/add-distributor",
         state
       );
       console.log(result)
       if (result.data.ok) {
         setLoading(false);
-        alert("Distributor Added");
+        toast({
+          title:"Distributor Added",
+          status:"success",
+          position:"top",
+          isClosable:true
+        })
+       setTimeout(()=> {
         window.location.href = "/distributors";
+       },2000)  
       } else {
         new Error("Failed to add distributor");
         setLoading(false);
@@ -58,6 +119,7 @@ const AddDistributor = () => {
                   name="firmName"
                   placeholder="Distributor or Firm Name"
                   onChange={handleChange}
+                  minLength={5}
                 />
               </FormControl>
 

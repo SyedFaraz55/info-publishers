@@ -1,5 +1,5 @@
-import { Box, Button, Flex, Text, useDisclosure, Divider, Tag, TagLabel, Select } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import { Box, Button, Flex, Text, useDisclosure, Divider, Tag, TagLabel, Select, Spinner, useToast } from "@chakra-ui/react";
+import React, { useState, useEffect, Suspense } from "react";
 import Header from "../../components/Header";
 import Layout from "../../components/Layout";
 import Modal from '../../components/Modal'
@@ -20,21 +20,37 @@ const Distributors = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [current, setView] = useState({});
   const [schools, setSchools] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
   const getDist = async () => {
-    const result = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-dist");
-    setData(result.data.result);
+    setLoading(true)
+    const result = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-dist");
+    if (result.data.ok) {
+      setLoading(false)
+      setData(result.data.result);
+      console.log(result.data.result);
+    } else {
+      alert("Failed to load distributors");
+      setLoading(false)
+    }
   };
   const getDistById = async () => {
     console.log(current)
-    const result = await axios.get(`https://infopubsliher-backend.onrender.com//api/admin/get-distById/${current._id}`);
+    const result = await axios.get(`https://infopubsliher-backend.onrender.com/api/admin/get-distById/${current._id}`);
     setSchools(result.data.result)
+    console.log(result.data.result)
   };
   const handleDelete = async (item) => {
     const ret = confirm("Are you sure?")
     if (ret) {
-      const result = await axios.post("https://infopubsliher-backend.onrender.com//api/admin/delete-dist", { id: item._id });
+      const result = await axios.post("https://infopubsliher-backend.onrender.com/api/admin/delete-dist", { id: item._id });
       if (result.data.ok) {
-        alert(result.data.message)
+        toast({
+          title:result.data.message,
+          status:"success",
+          position:"top",
+          isClosable:true
+        })
         getDist();
       } else {
         new Error("Failed to delete");
@@ -68,7 +84,8 @@ const Distributors = () => {
             </Button>
           </Flex>
 
-          <TableContainer mt={20}>
+
+          {loading ? <Spinner size={"lg"}  mt={2}/> : <TableContainer mt={10}>
             <Table variant="striped">
               <Thead>
                 <Tr>
@@ -89,12 +106,12 @@ const Distributors = () => {
                       <Td>{item.name}</Td>
                       <Td>{item.mobile}</Td>
                       <Td>{item.state}</Td>
-                      <Td>{item.school}</Td>
+                      <Td>{item.school || 0}</Td>
                       <Td>{item.active ? <Tag colorScheme={"green"}><TagLabel>Active</TagLabel></Tag> : <Tag colorScheme={"red"}><TagLabel>De-active</TagLabel></Tag>}</Td>
                       <Td>
                         <Select onChange={(e) => {
                           const confirm = window.confirm("Are you sure ?");
-                          axios.post("https://infopubsliher-backend.onrender.com//api/admin/update-dist", { id: item._id, status: e.target.value })
+                          axios.post("https://infopubsliher-backend.onrender.com/api/admin/update-dist", { id: item._id, status: e.target.value })
                             .then(res => {
                               if (res.data.ok) {
                                 alert(res.data.message);
@@ -132,7 +149,8 @@ const Distributors = () => {
                 })}
               </Tbody>
             </Table>
-          </TableContainer>
+          </TableContainer>}
+
           <Modal
             title={"Distributor Information"}
             isOpen={isOpen}
@@ -153,6 +171,7 @@ const Distributors = () => {
               <Text fontSize={"2xl"}>Schools Information</Text>
               <Box>
                 {schools?.map(item => {
+                  console.log(item,'item')
                   return <Box p={4} m={2} border={"1px"} borderRadius={4} borderColor="gray.200">
                     <Text>{item.name}</Text>
                     <Text>{item.email}</Text>

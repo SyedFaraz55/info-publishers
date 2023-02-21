@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Stat, StatLabel, StatNumber, Text } from "@chakra-ui/react";
+import { Box, CloseButton, Container, Flex, Stat, StatLabel, StatNumber, Text, useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import Header from "../../components/Header";
 import Layout from "../../components/Layout";
@@ -16,9 +16,15 @@ const DistributorAdmin = () => {
   const [local, setLocal] = useState(null);
   const [stats, setStats] = useState();
   const [plan, setPlan] = useState()
+  const [loading, setLoading] = useState(false)
   const router = useRouter();
+  const {
+    isOpen: isVisible,
+    onClose,
+    onOpen,
+  } = useDisclosure({ defaultIsOpen: true })
   const getStats = async () => {
-    const result = await axios.get(`https://infopubsliher-backend.onrender.com//api/admin/get-stats/${local?.user._id}`);
+    const result = await axios.get(`https://infopubsliher-backend.onrender.com/api/admin/get-stats/${local?.user._id}`);
     setStats({
       school: result.data.data.schoolCount,
       global: result.data.data.global,
@@ -28,11 +34,11 @@ const DistributorAdmin = () => {
 
   }
   const getYearPlan = async () => {
-    const rs = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-year-plan");
+    const rs = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-year-plan");
     setPlan(rs.data.data)
   }
   const getNotices = async () => {
-    const rs = await axios.post("https://infopubsliher-backend.onrender.com//api/admin/get-notice", {
+    const rs = await axios.post("https://infopubsliher-backend.onrender.com/api/admin/get-notice", {
       role: local?.user.role,
     });
     setNotices(rs.data.data[0]);
@@ -40,16 +46,14 @@ const DistributorAdmin = () => {
   useEffect(() => {
     setLocal(JSON.parse(localStorage?.getItem("@login")));
     getYearPlan();
+
   }, []);
   useEffect(() => {
-    getNotices();
-    getStats()
+    if (local) {
+      getNotices();
+      getStats()
+    }
   }, [local]);
-  useLayoutEffect(() => {
-    getNotices();
-    getStats()
-  }, [])
-
 
   if (!local) {
     return <Container mt={10}>
@@ -71,21 +75,27 @@ const DistributorAdmin = () => {
     <Box>
       <Header />
       <Layout>
-        <Box p={5}>
-        {plan ?  <Alert status='info'>
-    <AlertIcon />
-    <AlertTitle>{plan?.title}</AlertTitle>
-    <AlertDescription>
-      <Link href={plan?.link}>Download</Link>
-    </AlertDescription>
-  </Alert> : null}
+        <Box p={2}>
+          {plan ? <Alert status='info'>
+            <AlertIcon />
+            <AlertTitle>{plan?.title}</AlertTitle>
+            <AlertDescription>
+              <Link href={plan?.link}>Download</Link>
+            </AlertDescription>
+          </Alert> : null}
         </Box>
         {notices ? (
-          <Box p={5}>
-            <Alert status="info">
+          <Box p={2}>
+            <Alert status="warning">
               <AlertIcon />
               <AlertTitle>{notices?.title}</AlertTitle>
               <AlertDescription>{notices?.message}</AlertDescription>
+              <CloseButton
+                alignSelf='flex-start'
+                position='relative'
+
+                onClick={() => setNotices(null)}
+              />
             </Alert>
           </Box>
         ) : null}

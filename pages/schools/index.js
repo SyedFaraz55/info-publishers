@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Flex, Link, Select, Tag, TagLabel, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Flex, Link, Select, Spinner, Tag, TagLabel, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
@@ -17,19 +17,37 @@ import {
 import Router from "next/router";
 const School = () => {
   const [data, setData] = useState([]);
+  const [loading,setLoading] = useState(false)
+  const toast = useToast();
   const getSchool = async () => {
-    const res = await axios.get("https://infopubsliher-backend.onrender.com//api/admin/get-schools");
-    console.log(res.data.result);
+    setLoading(true)
+    const res = await axios.get("https://infopubsliher-backend.onrender.com/api/admin/get-schools");
+   if(res.data.ok)  {
+    setLoading(false)
     setData(res.data.result);
+   }else {
+    setLoading(false)
+    toast({
+      title:"Failed to load schools",
+      isClosable:true,
+      position:"top",
+      status:"error"
+    })
+   }
   };
 
   const handleDelete = async (id) => {
     const result = await axios.post(
-      "https://infopubsliher-backend.onrender.com//api/admin/delete-school",
+      "https://infopubsliher-backend.onrender.com/api/admin/delete-school",
       { id: id._id }
     );
     if (result.data.ok) {
-      alert("School Deleted");
+      toast({
+        title:"School Deleted",
+        isClosable:true,
+        position:"top",
+        status:"success"
+      }) 
       getSchool();
     } else {
       new Error("Failed to delete");
@@ -57,7 +75,7 @@ const School = () => {
           </Flex>
         </Box>
         <Box p={4}>
-          <TableContainer mt={5}>
+         {loading ? <Spinner size={"lg"} mt={2} /> :  <TableContainer mt={5}>
             <Table variant="striped">
               <Thead>
                 <Tr>
@@ -76,7 +94,7 @@ const School = () => {
                       <Td>
                         <Select onChange={(e) => {
                           const confirm = window.confirm("Are you sure ?");
-                          axios.post("https://infopubsliher-backend.onrender.com//api/admin/update-school", { id: item._id, status: e.target.value })
+                          axios.post("https://infopubsliher-backend.onrender.com/api/admin/update-school", { id: item._id, status: e.target.value })
                             .then(res => {
                               if (res.data.ok) {
                                 alert(res.data.message);
@@ -115,7 +133,7 @@ const School = () => {
                 })}
               </Tbody>
             </Table>
-          </TableContainer>
+          </TableContainer>}
         </Box>
       </Layout>
     </Box>
